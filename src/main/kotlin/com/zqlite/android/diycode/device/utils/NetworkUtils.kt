@@ -20,6 +20,7 @@ import android.content.Context
 import android.widget.ImageView
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
+import com.zqlite.android.diycode.R
 
 /**
  * Created by scott on 2017/8/11.
@@ -31,10 +32,9 @@ class NetworkUtils(context :Context) {
         picsso = Picasso.Builder(context).downloader(OkHttpDownloader(context,1024L * 1024 * 100)).build()
     }
 
-    fun loadImage(imageView: ImageView,url:String){
-        picsso!!.load(url).into(imageView)
+    fun loadImage(imageView: ImageView,url:String,defaultId:Int){
+        picsso!!.load(url).error(defaultId).into(imageView)
     }
-
 
      companion object Factory{
         var instance : NetworkUtils?=null

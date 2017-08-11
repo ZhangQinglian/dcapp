@@ -20,9 +20,10 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import com.android.databinding.library.baseAdapters.BR
 import com.zqlite.android.dclib.entiry.Topic
+import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
@@ -40,7 +41,6 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     override fun onStart() {
         super.onStart()
         mPresenter!!.start()
-        mPresenter!!.loadTopic()
     }
 
     override fun onStop() {
@@ -60,6 +60,14 @@ class TopicFragment : BaseFragment(),TopicContract.View {
         var linearLayoutManager : LinearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         topic_list.layoutManager = linearLayoutManager
         topic_list.adapter = mAdapter
+
+        topic_fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
+        topic_fresh_layout.setOnRefreshListener({
+            mPresenter!!.loadTopic(0,20)
+        })
+        topic_fresh_layout.isRefreshing = true
+
+        mPresenter!!.loadTopic(0,30)
     }
 
     override fun initData() {
@@ -67,6 +75,9 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     }
 
     override fun updateTopicList(topicList: List<Topic>) {
+        if(topic_fresh_layout.isRefreshing){
+            topic_fresh_layout.isRefreshing = false
+        }
         mAdapter.updateList(topicList)
     }
 
@@ -92,28 +103,52 @@ class TopicFragment : BaseFragment(),TopicContract.View {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicHolder {
-            var inflater : LayoutInflater = LayoutInflater.from(context)
-            var listItemTopicBinding : ListitemTopicBinding = ListitemTopicBinding.inflate(inflater,parent,false)
-            return TopicHolder(listItemTopicBinding)
+            if(viewType == 0){
+                var inflater : LayoutInflater = LayoutInflater.from(context)
+                var listItemTopicBinding : ListitemTopicBinding = ListitemTopicBinding.inflate(inflater,parent,false)
+                return TopicItemHolder(listItemTopicBinding)
+            }else{
+                var inflater : LayoutInflater = LayoutInflater.from(context)
+                var view = inflater.inflate(R.layout.listitem_topic_node,parent,false)
+                return TopicNodeHolder(view)
+            }
+
         }
 
-        override fun onBindViewHolder(holder: TopicHolder?, position: Int) {
-            var topic = topicList.get(position)
-            holder!!.bind(topic)
+        override fun onBindViewHolder(itemHolder: TopicHolder?, position: Int) {
+            if(getItemViewType(position) == 0){
+                var topic = topicList[position]
+                (itemHolder as TopicItemHolder).bind(topic)
+            }else{
+
+            }
+
         }
 
         override fun getItemCount(): Int {
             return topicList.size
         }
 
+        override fun getItemViewType(position: Int): Int {
+            if(position >0) return 0
+            return 1
+        }
+
     }
 
+    private inner abstract class TopicHolder(view : View) : RecyclerView.ViewHolder(view)
 
-    private inner class TopicHolder(var binding : ListitemTopicBinding) : RecyclerView.ViewHolder(binding.root){
+    private inner class TopicItemHolder(var binding : ListitemTopicBinding) : TopicHolder(binding.root){
         fun bind(topic: Topic){
             binding.setVariable(BR.topic,topic)
             binding.executePendingBindings()
-            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl)
+            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
+        }
+    }
+
+    private inner class TopicNodeHolder(view :View):TopicHolder(view){
+        init{
+
         }
     }
 }
