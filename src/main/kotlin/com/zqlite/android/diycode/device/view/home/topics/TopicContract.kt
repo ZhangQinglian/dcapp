@@ -16,6 +16,7 @@
 
 package com.zqlite.android.diycode.device.view.home.topics
 
+import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.dclib.entiry.Topic
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
@@ -27,10 +28,17 @@ interface TopicContract {
 
     interface Presenter : IPresenter{
 
-        fun loadTopic(offset:Int = 0,limit:Int = 20)
+        fun loadTopic(offset:Int = 0,limit:Int = 150)
+
+        fun loadNodes()
+
+        fun getCurrentNodeId():Int
+
+        fun setCurrentNodeId(id:Int)
     }
 
     interface View : IView<Presenter>{
         fun updateTopicList(topicList:List<Topic>)
+        fun nodesOk(nodes : List<Node>)
     }
 }

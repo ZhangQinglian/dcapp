@@ -51,7 +51,7 @@ class HomeFragment : BaseFragment(),HomeContract.View {
     override fun initView() {
         home_pager.adapter = HomePageAdapter(activity.supportFragmentManager)
         home_tab.setupWithViewPager(home_pager)
-        home_tab.getTabAt(0)!!.text = "0"
+        home_tab.getTabAt(0)!!.text = "社区"
     }
 
     override fun initData() {

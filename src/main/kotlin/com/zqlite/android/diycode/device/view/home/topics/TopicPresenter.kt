@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view.home.topics
 
 import com.zqlite.android.dclib.DiyCodeApi
+import com.zqlite.android.dclib.entiry.Node
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -25,6 +26,8 @@ import io.reactivex.schedulers.Schedulers
  * Created by scott on 2017/8/11.
  */
 class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
+
+    private var currentId : Int = -1
 
     init {
         mView.setPresenter(this)
@@ -37,9 +40,27 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
     }
 
     override fun loadTopic(offset: Int, limit: Int) {
-        DiyCodeApi.loadTop(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+        DiyCodeApi.loadTop(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
             mView.updateTopicList(it)
-        })
+        }
+    }
+
+    override fun loadNodes() {
+        DiyCodeApi.loadNodes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            var nodeList : MutableList<Node> = mutableListOf()
+            var nodeAll : Node = Node(-1,"所有",-1,"","",-1,"","")
+            nodeList.add(nodeAll)
+            nodeList.addAll(it)
+            mView.nodesOk(nodeList)
+        }
+    }
+
+    override fun getCurrentNodeId(): Int {
+        return currentId
+    }
+
+    override fun setCurrentNodeId(id: Int) {
+        currentId = id
     }
 
 }
