@@ -70,7 +70,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
         topic_fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
         topic_fresh_layout.setOnRefreshListener({
-            mPresenter!!.loadTopic()
+            mPresenter!!.loadTopic(type = "",nodeId = mPresenter!!.getCurrentNodeId())
         })
         topic_fresh_layout.isRefreshing = true
 
@@ -84,7 +84,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     override fun nodesOk(nodes: List<Node>) {
         mNodeAdapter = NodeAdapter(nodes)
         if(mNodeAdapter!!.itemCount > 0){
-            mPresenter!!.loadTopic()
+            mPresenter!!.loadTopic(type = "",nodeId = mPresenter!!.getCurrentNodeId())
         }
     }
     override fun updateTopicList(topicList: List<Topic>) {
@@ -111,6 +111,8 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
         fun updateList(data:List<Topic>){
             topicList.clear()
+            //加一个虚假Topic用于顶部Node列表占位
+            topicList.add(Topic.getMockTopic())
             topicList.addAll(data)
             notifyDataSetChanged()
         }
@@ -138,6 +140,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             }else{
                 (itemHolder as TopicNodeHolder).setAdapter(mNodeAdapter!!)
                 mNodeAdapter!!.notifyDataSetChanged()
+                itemHolder.go(mPresenter!!.getCurrentNodePosition())
             }
 
         }
@@ -160,7 +163,8 @@ class TopicFragment : BaseFragment(),TopicContract.View {
         }
 
         override fun onBindViewHolder(holder: NodeItemHolder?, position: Int) {
-           holder!!.bind(nodes[position])
+            holder!!.bind(nodes[position])
+
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): NodeItemHolder {
@@ -171,6 +175,28 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
         fun getNodeAt(index :Int) : Node{
             return nodes[index]
+        }
+    }
+
+    private inner abstract class TopicHolder(view : View) : RecyclerView.ViewHolder(view)
+
+    private inner class TopicItemHolder(var binding : ListitemTopicBinding) : TopicHolder(binding.root){
+        fun bind(topic: Topic){
+            binding.setVariable(BR.topic,topic)
+            binding.executePendingBindings()
+            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
+        }
+    }
+
+    private inner class TopicNodeHolder(view :View):TopicHolder(view){
+        fun setAdapter(adapter : NodeAdapter){
+            val recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
+            recyclerView.adapter = adapter
+        }
+
+        fun go(position : Int){
+            val recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
+            recyclerView.smoothScrollToPosition(position)
         }
     }
 
@@ -189,25 +215,8 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             bingding.root.setOnClickListener {
                 var p : Int = adapterPosition
                 var node : Node = mNodeAdapter!!.getNodeAt(p)
-                mPresenter!!.setCurrentNodeId(node.id)
+                mPresenter!!.setCurrentNode(node.id,p)
             }
-        }
-    }
-
-    private inner abstract class TopicHolder(view : View) : RecyclerView.ViewHolder(view)
-
-    private inner class TopicItemHolder(var binding : ListitemTopicBinding) : TopicHolder(binding.root){
-        fun bind(topic: Topic){
-            binding.setVariable(BR.topic,topic)
-            binding.executePendingBindings()
-            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
-        }
-    }
-
-    private inner class TopicNodeHolder(view :View):TopicHolder(view){
-        fun setAdapter(adapter : NodeAdapter){
-            var recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
-            recyclerView.adapter = adapter
         }
     }
 }

@@ -27,8 +27,10 @@ import io.reactivex.schedulers.Schedulers
  */
 class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
 
+
     private var currentId : Int = -1
 
+    private var currentPosition : Int = 0
     init {
         mView.setPresenter(this)
     }
@@ -39,16 +41,23 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
     override fun stop() {
     }
 
-    override fun loadTopic(offset: Int, limit: Int) {
-        DiyCodeApi.loadTop(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
-            mView.updateTopicList(it)
+    override fun loadTopic(offset: Int, limit: Int,type:String,nodeId : Int) {
+        if(nodeId == -1){
+            DiyCodeApi.loadTop(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+                mView.updateTopicList(it)
+            }
+        }else{
+            DiyCodeApi.loadTop(offset,limit,nodeId = nodeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+                mView.updateTopicList(it)
+            }
         }
+
     }
 
     override fun loadNodes() {
         DiyCodeApi.loadNodes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            var nodeList : MutableList<Node> = mutableListOf()
-            var nodeAll : Node = Node(-1,"所有",-1,"","",-1,"","")
+            val nodeList : MutableList<Node> = mutableListOf()
+            val nodeAll : Node = Node(-1,"所有",-1,"","",-1,"","")
             nodeList.add(nodeAll)
             nodeList.addAll(it)
             mView.nodesOk(nodeList)
@@ -59,8 +68,12 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
         return currentId
     }
 
-    override fun setCurrentNodeId(id: Int) {
+    override fun setCurrentNode(id: Int,position:Int) {
         currentId = id
+        currentPosition = position
+        loadTopic(0,150,"",nodeId = id)
     }
-
+    override fun getCurrentNodePosition(): Int {
+        return currentPosition
+    }
 }

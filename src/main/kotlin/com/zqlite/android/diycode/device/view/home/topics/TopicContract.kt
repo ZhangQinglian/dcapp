@@ -28,13 +28,15 @@ interface TopicContract {
 
     interface Presenter : IPresenter{
 
-        fun loadTopic(offset:Int = 0,limit:Int = 150)
+        fun loadTopic(offset:Int = 0,limit:Int = 150,type:String,nodeId:Int)
 
         fun loadNodes()
 
         fun getCurrentNodeId():Int
 
-        fun setCurrentNodeId(id:Int)
+        fun getCurrentNodePosition():Int
+
+        fun setCurrentNode(id:Int,position:Int)
     }
 
     interface View : IView<Presenter>{
