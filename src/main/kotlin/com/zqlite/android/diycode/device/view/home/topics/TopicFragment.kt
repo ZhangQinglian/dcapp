@@ -24,6 +24,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.dclib.entiry.Topic
 import com.zqlite.android.diycode.BR
@@ -32,12 +33,12 @@ import com.zqlite.android.diycode.databinding.ListitemTopicBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicNodeItemBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic.*
 /**
  * Created by scott on 2017/8/11.
  */
 class TopicFragment : BaseFragment(),TopicContract.View {
-
 
     private var mPresenter : TopicContract.Presenter?=null
 
@@ -70,7 +71,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
         topic_fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
         topic_fresh_layout.setOnRefreshListener({
-            mPresenter!!.loadTopic(type = "",nodeId = mPresenter!!.getCurrentNodeId())
+            mPresenter!!.loadTopic()
         })
         topic_fresh_layout.isRefreshing = true
 
@@ -84,7 +85,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     override fun nodesOk(nodes: List<Node>) {
         mNodeAdapter = NodeAdapter(nodes)
         if(mNodeAdapter!!.itemCount > 0){
-            mPresenter!!.loadTopic(type = "",nodeId = mPresenter!!.getCurrentNodeId())
+            mPresenter!!.loadTopic()
         }
     }
     override fun updateTopicList(topicList: List<Topic>) {
@@ -92,6 +93,10 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             topic_fresh_layout.isRefreshing = false
         }
         mAdapter.updateList(topicList)
+    }
+
+    override fun addTopicList(topicList: List<Topic>) {
+        mAdapter.addTopicList(topicList)
     }
 
 
@@ -117,6 +122,10 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             notifyDataSetChanged()
         }
 
+        fun addTopicList(data:List<Topic>){
+            topicList.addAll(data)
+            notifyItemRangeChanged(topicList.size - 1 - data.size,data.size)
+        }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicHolder {
             if(viewType == 0){
                 val inflater : LayoutInflater = LayoutInflater.from(context)
@@ -137,10 +146,16 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             if(getItemViewType(position) == 0){
                 val topic = topicList[position]
                 (itemHolder as TopicItemHolder).bind(topic)
+                if(position == topicList.size - 1){
+                    Toast.makeText(context,"loat next",Toast.LENGTH_SHORT).show()
+                    mPresenter!!.loadNextPage()
+                }
+
             }else{
                 (itemHolder as TopicNodeHolder).setAdapter(mNodeAdapter!!)
                 mNodeAdapter!!.notifyDataSetChanged()
                 itemHolder.go(mPresenter!!.getCurrentNodePosition())
+
             }
 
         }

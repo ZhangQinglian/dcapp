@@ -18,7 +18,7 @@ package com.zqlite.android.diycode.device.view.home.topics
 
 import com.zqlite.android.dclib.DiyCodeApi
 import com.zqlite.android.dclib.entiry.Node
-import io.reactivex.Scheduler
+import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -27,10 +27,17 @@ import io.reactivex.schedulers.Schedulers
  */
 class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
 
+    private val LIMIT : Int = 20
 
-    private var currentId : Int = -1
+    //当前选择的Node的Id
+    private var currentNodeId: Int = -1
 
+    //当前选择Node的Id在RecyclerView中的位置。
     private var currentPosition : Int = 0
+
+    //当前Node分类下的offset
+    private var currentOffset = 0
+
     init {
         mView.setPresenter(this)
     }
@@ -41,13 +48,13 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
     override fun stop() {
     }
 
-    override fun loadTopic(offset: Int, limit: Int,type:String,nodeId : Int) {
-        if(nodeId == -1){
-            DiyCodeApi.loadTop(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+    override fun loadTopic(offset: Int, limit: Int,type:String) {
+        if(currentNodeId == -1){
+            DiyCodeApi.loadTopic(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
                 mView.updateTopicList(it)
             }
         }else{
-            DiyCodeApi.loadTop(offset,limit,nodeId = nodeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+            DiyCodeApi.loadTopic(offset,limit,nodeId = currentNodeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
                 mView.updateTopicList(it)
             }
         }
@@ -65,15 +72,36 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
     }
 
     override fun getCurrentNodeId(): Int {
-        return currentId
+        return currentNodeId
     }
 
     override fun setCurrentNode(id: Int,position:Int) {
-        currentId = id
+        currentNodeId = id
         currentPosition = position
-        loadTopic(0,150,"",nodeId = id)
+        //在选择Node的时候currentOffset需要清零
+        currentOffset = 0
+        loadTopic(0,LIMIT)
     }
     override fun getCurrentNodePosition(): Int {
         return currentPosition
     }
+
+    override fun loadNextPage() {
+        var newOffset = currentOffset + LIMIT
+        Logly.d("new offset = " + newOffset)
+        if(currentNodeId == -1){
+
+            DiyCodeApi.loadTopic(newOffset, limit = LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+                currentOffset += it.size
+                mView.addTopicList(it)
+            }
+        }else{
+            DiyCodeApi.loadTopic(newOffset,limit = LIMIT,nodeId = currentNodeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
+                currentOffset += it.size
+                mView.addTopicList(it)
+            }
+        }
+    }
+
+
 }

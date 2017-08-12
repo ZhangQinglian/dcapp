@@ -28,7 +28,7 @@ interface TopicContract {
 
     interface Presenter : IPresenter{
 
-        fun loadTopic(offset:Int = 0,limit:Int = 150,type:String,nodeId:Int)
+        fun loadTopic(offset:Int = 0,limit:Int = 20,type:String = "")
 
         fun loadNodes()
 
@@ -37,10 +37,13 @@ interface TopicContract {
         fun getCurrentNodePosition():Int
 
         fun setCurrentNode(id:Int,position:Int)
+
+        fun loadNextPage()
     }
 
     interface View : IView<Presenter>{
         fun updateTopicList(topicList:List<Topic>)
+        fun addTopicList(topicList: List<Topic>)
         fun nodesOk(nodes : List<Node>)
     }
 }
