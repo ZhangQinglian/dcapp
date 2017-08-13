@@ -204,6 +204,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
             binding.root.setOnClickListener {
                 var intent : Intent = Intent(context,TopicDetailActivity::class.java)
+                intent.putExtra("topicId",topic.id)
                 startActivity(intent)
             }
         }

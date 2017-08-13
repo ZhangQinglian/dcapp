@@ -27,14 +27,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:clickable="true"
         android:foreground="?selectableItemBackgroundBorderless"
         app:cardCornerRadius="0dp"
         app:cardElevation="1dp"
-        app:contentPadding="15dp">
+        app:contentPadding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="10dp">
 
                 <TextView
                     android:id="@+id/username"
@@ -72,7 +72,7 @@
                     android:layout_marginLeft="20dp"
                     android:gravity="bottom"
                     android:text="@{topic.nodeName}"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
                 <TextView
@@ -92,7 +92,7 @@
                     android:layout_below="@id/title"
                     android:layout_marginTop="10dp"
                     android:text="@{topic.getCreatedAtDes}"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/created_at"
                     android:text="@{topic.getRepliedAtDes}"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
 
@@ -112,7 +112,7 @@
                     android:text="@{topic.getReplyCount}"
                     android:layout_alignBottom="@id/replied_at"
                     android:layout_alignParentRight="true"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
                 <ImageView

@@ -26,6 +26,8 @@ import kotlinx.android.synthetic.main.activity_topic_detail.*
  */
 class TopicDetailActivity : BaseActivity() {
 
+    private var mPresetner : TopicDetailContract.Presenter ? = null
+    private var mTopicDetailFragment : TopicDetailFragment? = null
 
     override fun getLayoutId(): Int {
         return R.layout.activity_topic_detail
@@ -34,7 +36,7 @@ class TopicDetailActivity : BaseActivity() {
     override fun initView() {
         //action bar
         setSupportActionBar(toolbar)
-        toolbar.setTitle(R.string.app_name)
+        toolbar.setTitle(R.string.topic_detail)
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back)
         toolbar.setNavigationOnClickListener({
             finish()
@@ -42,8 +44,17 @@ class TopicDetailActivity : BaseActivity() {
 
         //slide
         DecorViewProxy().bind(this)
+        mTopicDetailFragment = TopicDetailFragment.getInstance(null)
+        mPresetner = TopicDetailPresenter(mTopicDetailFragment!!)
+        addFragment(mTopicDetailFragment!!,R.id.topic_detail_container)
+
     }
 
     override fun initData() {
+        var args = intent.extras
+        if(args != null){
+            var id = args.getInt("topicId")
+            mPresetner!!.loadTopicDetail(id)
+        }
     }
 }
