@@ -36,7 +36,7 @@ class TopicDetailActivity : BaseActivity() {
     override fun initView() {
         //action bar
         setSupportActionBar(toolbar)
-        toolbar.setTitle(R.string.topic_detail)
+        supportActionBar!!.setTitle(R.string.topic_detail)
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back)
         toolbar.setNavigationOnClickListener({
             finish()

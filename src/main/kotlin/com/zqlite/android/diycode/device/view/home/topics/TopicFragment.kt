@@ -37,6 +37,8 @@ import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic.*
+import kotlinx.android.synthetic.main.fragment_topic_detail.*
+
 /**
  * Created by scott on 2017/8/11.
  */
@@ -237,6 +239,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             bingding.root.setOnClickListener {
                 var p : Int = adapterPosition
                 var node : Node = mNodeAdapter!!.getNodeAt(p)
+                topic_fresh_layout.isRefreshing = true
                 mPresenter!!.setCurrentNode(node.id,p)
             }
         }
