@@ -18,8 +18,8 @@
     <data>
 
         <variable
-            name="topicDetail"
-            type="com.zqlite.android.dclib.entiry.TopicDetail" />
+            name="topicReply"
+            type="com.zqlite.android.dclib.entiry.TopicReply" />
 
     </data>
 
@@ -41,35 +41,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/avatar"
-            android:text="@{topicDetail.user.name}"
+            android:text="@{topicReply.user.name}"
             android:textColor="@android:color/black"
             android:textSize="13sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/nodename"
-            android:layout_alignBottom="@id/username"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_marginRight="10dp"
-            android:text="@{topicDetail.nodeName}"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp" />
         <TextView
             android:id="@+id/loginName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/username"
             android:layout_toRightOf="@id/avatar"
-            android:text="@{topicDetail.user.getLoginString}"
+            android:text="@{topicReply.user.getLoginString}"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp" />
 
         <br.tiagohm.markdownview.MarkdownView
             android:id="@+id/markdownView"
             android:layout_below="@id/avatar"
+            android:layout_toRightOf="@id/avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:escapeHtml="false"
@@ -82,55 +72,27 @@
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:layout_marginLeft="10dp"
-            android:text="@{topicDetail.getSimpleDate}"
+            android:text="@{topicReply.getSimpleDate}"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp" />
-        <View
-            android:id="@+id/line1"
-            android:layout_below="@id/createTime"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_margin="10dp"
-            android:background="@color/lineGray"/>
-        <TextView
-            android:id="@+id/hitTimes"
-            android:layout_below="@id/line1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_marginLeft="10dp"
-            android:text="@{topicDetail.getHitsStr}"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/topic_hit_times_des"
-            android:layout_below="@id/line1"
-            android:layout_toRightOf="@id/hitTimes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_marginLeft="5dp"
-            android:text="@string/topic_hits"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp" />
+
 
         <TextView
             android:id="@+id/like_count"
-            android:layout_below="@id/line1"
-            android:layout_toRightOf="@id/topic_hit_times_des"
+            android:layout_below="@id/markdownView"
+            android:layout_toRightOf="@id/createTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:layout_marginLeft="10dp"
-            android:text="@{topicDetail.getLikeStr}"
+            android:text="@{topicReply.getLikeStr}"
             android:textColor="@android:color/black"
             android:textStyle="bold"
             android:textSize="14sp" />
 
         <TextView
-            android:layout_below="@id/line1"
+            android:layout_below="@id/markdownView"
             android:layout_toRightOf="@id/like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,5 +101,13 @@
             android:text="@string/topic_likes"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_below="@id/createTime"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_margin="10dp"
+            android:background="@color/lineGray"/>
     </RelativeLayout>
 </layout>

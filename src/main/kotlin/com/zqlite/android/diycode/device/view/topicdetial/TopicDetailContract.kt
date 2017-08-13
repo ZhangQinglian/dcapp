@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view.topicdetial
 
 import com.zqlite.android.dclib.entiry.TopicDetail
+import com.zqlite.android.dclib.entiry.TopicReply
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
@@ -27,9 +28,11 @@ interface TopicDetailContract {
 
     interface Presenter : IPresenter{
         fun loadTopicDetail(id:Int)
+        fun loadTopicReplies(id:Int)
     }
 
     interface View : IView<Presenter>{
         fun updateTopicDetail(topicDetal : TopicDetail)
+        fun updateReplies(replies : List<TopicReply>)
     }
 }

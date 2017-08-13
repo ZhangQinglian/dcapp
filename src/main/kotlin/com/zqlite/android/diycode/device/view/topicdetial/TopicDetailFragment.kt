@@ -24,9 +24,11 @@ import android.view.View
 import android.view.ViewGroup
 import br.tiagohm.markdownview.css.styles.Github
 import com.zqlite.android.dclib.entiry.TopicDetail
+import com.zqlite.android.dclib.entiry.TopicReply
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicDetailHeadBinding
+import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
@@ -39,7 +41,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     private var mPresenter: TopicDetailContract.Presenter? = null
 
-    private val mAdapter : TopicDetailAdapter = TopicDetailAdapter()
+    private val mAdapter: TopicDetailAdapter = TopicDetailAdapter()
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -67,20 +69,24 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         fresh_layout.isRefreshing = false
     }
 
+    override fun updateReplies(replies: List<TopicReply>) {
+        var topicRepliesList = replies.map { TopicRepliesItem(it)}
+        mAdapter.setItems(topicRepliesList)
+    }
+
     inner class TopicDetailAdapter : RecyclerView.Adapter<TopicDetailHodler>() {
 
         private var itemList: MutableList<TopicDetailItem> = mutableListOf()
 
-        fun updateHead(topicDetail: TopicDetail){
-            var topicDetailItem : TopicDetailItem = TopicDetailHeadItem(topicDetail)
+        fun updateHead(topicDetail: TopicDetail) {
+            var topicDetailItem: TopicDetailItem = TopicDetailHeadItem(topicDetail)
             itemList.clear()
             itemList.add(topicDetailItem)
             notifyDataSetChanged()
         }
 
         fun setItems(items: List<TopicDetailItem>) {
-            itemList.clear()
-            itemList.addAll(itemList)
+            itemList.addAll(items)
             notifyDataSetChanged()
         }
 
@@ -92,14 +98,26 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                     var topicDetailHeadItem = topicDetailItem as TopicDetailHeadItem
                     (holder as TopicDetailHeadHolder).bind(topicDetailHeadItem.data)
                 }
+                1 ->{
+                    var topicReplyItem = topicDetailItem as TopicRepliesItem
+                    (holder as TopicReplyHolder).bind(topicReplyItem.data)
+                }
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicDetailHodler {
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicDetailHodler? {
             var inflater: LayoutInflater = LayoutInflater.from(context)
-            //todo 需要type判断
-            var binding = ListitemTopicDetailHeadBinding.inflate(inflater, parent, false)
-            return TopicDetailHeadHolder(binding)
+            when(viewType){
+                0 ->{
+                    var binding = ListitemTopicDetailHeadBinding.inflate(inflater, parent, false)
+                    return TopicDetailHeadHolder(binding)
+                }
+                1 ->{
+                    var binding = ListitemTopicReplyBinding.inflate(inflater,parent,false)
+                    return TopicReplyHolder(binding)
+                }
+            }
+            return null
         }
 
         override fun getItemCount(): Int {
@@ -119,17 +137,31 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     class TopicDetailHeadItem(val data: TopicDetail) : TopicDetailItem()
 
+    class TopicRepliesItem(val data: TopicReply) : TopicDetailItem()
+
     inner abstract class TopicDetailHodler(view: View) : RecyclerView.ViewHolder(view)
 
     inner class TopicDetailHeadHolder(var binding: ListitemTopicDetailHeadBinding) : TopicDetailHodler(binding.root) {
         fun bind(topicDetail: TopicDetail) {
             binding.setVariable(BR.topicDetail, topicDetail)
             binding.executePendingBindings()
-            NetworkUtils.instance!!.loadImage(binding.avatar,topicDetail.user.avatarUrl,R.drawable.default_avatar)
+            NetworkUtils.instance!!.loadImage(binding.avatar, topicDetail.user.avatarUrl, R.drawable.default_avatar)
             var css = Github()
-            css.addRule("body","padding: 0px")
+            css.addRule("body", "padding: 0px")
             binding.markdownView.addStyleSheet(css)
             binding.markdownView.loadMarkdown(topicDetail.getContentWithTitle())
+        }
+    }
+
+    inner class TopicReplyHolder(var binding:ListitemTopicReplyBinding):TopicDetailHodler(binding.root){
+        fun bind(topicReply: TopicReply){
+            binding.setVariable(BR.topicReply,topicReply)
+            binding.executePendingBindings()
+            NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
+            var css = Github()
+            css.addRule("body", "padding: 0px")
+            binding.markdownView.addStyleSheet(css)
+            binding.markdownView.loadMarkdown(topicReply.bodyHtml)
         }
     }
 
