@@ -16,6 +16,7 @@
 
 package com.zqlite.android.diycode.device.view.home.topics
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ import com.zqlite.android.diycode.databinding.ListitemTopicBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicNodeItemBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic.*
 /**
@@ -200,6 +202,10 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             binding.setVariable(BR.topic,topic)
             binding.executePendingBindings()
             NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
+            binding.root.setOnClickListener {
+                var intent : Intent = Intent(context,TopicDetailActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

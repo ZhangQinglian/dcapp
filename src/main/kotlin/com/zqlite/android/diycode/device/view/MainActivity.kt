@@ -16,9 +16,7 @@
 
 package com.zqlite.android.diycode.device.view
 
-import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import com.squareup.picasso.Picasso
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.home.HomeContract
 import com.zqlite.android.diycode.device.view.home.HomeFragment
