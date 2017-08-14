@@ -57,6 +57,15 @@
             android:text="@{topicReply.user.getLoginString}"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp" />
+        <TextView
+            android:id="@+id/floor_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/username"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginRight="10dp"
+            android:textSize="13sp" />
 
         <br.tiagohm.markdownview.MarkdownView
             android:id="@+id/markdownView"

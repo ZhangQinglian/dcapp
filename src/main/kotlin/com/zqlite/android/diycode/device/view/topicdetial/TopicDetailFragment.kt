@@ -195,11 +195,19 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.setVariable(BR.topicReply,topicReply)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
+            binding.floorAt.text = getString(R.string.floor_at,adapterPosition)
             var css = Github()
             css.addRule("body", "padding: 0px")
             binding.markdownView.addStyleSheet(css)
             binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html",null)
-            binding.markdownView.webViewClient = DcWebViewClient()
+            binding.markdownView.webViewClient = DcWebViewClient(object :DcWebViewClient.Callback{
+                override fun goFloor(floor: Int) {
+                    topic_detail.smoothScrollToPosition(floor)
+                }
+
+                override fun goUser(userLogin: String) {
+                }
+            })
         }
     }
 

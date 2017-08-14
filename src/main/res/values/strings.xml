@@ -6,4 +6,6 @@
     <string name="topic_detail">主题</string>
     <string name="topic_hits">阅读</string>
     <string name="topic_likes">喜欢</string>
+
+    <string name="floor_at">#%1$d楼</string>
 </resources>

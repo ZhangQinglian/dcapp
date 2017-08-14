@@ -30,15 +30,28 @@ class ExampleUnitTest {
 
     @Test
     fun parseHtml(){
-        var pattern : Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
-        var html = "<p><a href=\"#reply1\" class=\"at_floor\" data-floor=\"1\">#1楼</a> <a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a> 我写的是社区首页的地址，这个对app应该没什么影响。<a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a></p>"
-        var matcher = pattern.matcher(html)
-        if(matcher.find()){
+        var patternAt : Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
+        var patternFloor : Pattern = Pattern.compile("<a href=\"#reply.*?class=\"at_floor\"")
+        var html = "<p><a href=\"#reply1\" class=\"at_floor\" data-floor=\"1\">#1楼</a> <a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a> 我写的是社区首页的地址，这个对app应该没什么影响。<a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a><a href=\"#reply1\" class=\"at_floor\" data-floor=\"1\">#1楼</a> </p>"
+        var matcher = patternAt.matcher(html)
+        while(matcher.find()){
             var s = matcher.group()
             var index = html.indexOf(s)
             var builder : StringBuilder = StringBuilder(html)
-            builder.insert(index + 9,"http://localhost")
-            println(builder.toString())
+            builder.insert(index + 9,"http://localhost/user")
+            html = builder.toString()
+            println(html)
         }
+
+        matcher = patternFloor.matcher(html)
+        while (matcher.find()){
+            var s = matcher.group()
+            var index = html.indexOf(s)
+            var builder : StringBuilder = StringBuilder(html)
+            builder.insert(index + 9,"http://localhost/floor_at")
+            html = builder.toString()
+            println(html)
+        }
+
     }
 }

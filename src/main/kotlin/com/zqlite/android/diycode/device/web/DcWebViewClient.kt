@@ -18,14 +18,30 @@ package com.zqlite.android.diycode.device.web
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.zqlite.android.diycode.device.utils.NetworkUtils
+import com.zqlite.android.logly.Logly
 
 /**
  * Created by scott on 2017/8/14.
  */
-class DcWebViewClient : WebViewClient() {
+class DcWebViewClient(val callback: Callback) : WebViewClient() {
+
+    interface Callback{
+        fun goFloor(floor:Int)
+        fun goUser(userLogin:String)
+    }
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
 
+        if(url!!.contains(NetworkUtils.kLocalHostUser)){
+            val userLogin = url.substring(NetworkUtils.kLocalHostUser.length+1)
+            callback.goUser(userLogin)
+        }
+        if(url!!.contains(NetworkUtils.kLocalHostFloorAt)){
+            var floorAt = url.substring(NetworkUtils.kLocalHostFloorAt.length+1)
+            var n = floorAt.substring(5)
+            callback.goFloor(n.toInt())
+        }
         return true
     }
 }

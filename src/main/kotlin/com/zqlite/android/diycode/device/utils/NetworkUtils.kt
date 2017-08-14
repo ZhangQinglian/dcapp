@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.utils
 
 import android.content.Context
+import android.util.Log
 import android.widget.ImageView
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
@@ -27,35 +28,50 @@ import java.util.regex.Pattern
 /**
  * Created by scott on 2017/8/11.
  */
-class NetworkUtils(context :Context) {
+class NetworkUtils(context: Context) {
 
-    var picsso : Picasso? = null
+
+    var picsso: Picasso? = null
+
     init {
-        picsso = Picasso.Builder(context).downloader(OkHttpDownloader(context,1024L * 1024 * 100)).build()
+        picsso = Picasso.Builder(context).downloader(OkHttpDownloader(context, 1024L * 1024 * 100)).build()
     }
 
-    fun loadImage(imageView: ImageView,url:String,defaultId:Int){
+    fun loadImage(imageView: ImageView, url: String, defaultId: Int) {
         picsso!!.load(url).error(defaultId).into(imageView)
     }
 
-    fun getReplyClickable(html:String):String{
-        var pattern : Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
-        var matcher = pattern.matcher(html)
-        if(matcher.find()){
+    fun getReplyClickable(html: String): String {
+        var parsedHtml = html
+        var patternAt: Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
+        var patternFloor : Pattern = Pattern.compile("<a href=\"#reply.*?class=\"at_floor\"")
+        var matcher = patternAt.matcher(html)
+        while (matcher.find()) {
             var s = matcher.group()
             var index = html.indexOf(s)
-            var builder : StringBuilder = StringBuilder(html)
-            builder.insert(index + 9,"http://localhost")
-            return builder.toString()
+            var builder: StringBuilder = StringBuilder(html)
+            builder.insert(index + 9, kLocalHostUser)
+            parsedHtml = builder.toString()
         }
-        return html
+
+        matcher = patternFloor.matcher(parsedHtml)
+        while (matcher.find()){
+            var s = matcher.group()
+            var index = parsedHtml.indexOf(s)
+            var builder : StringBuilder = StringBuilder(parsedHtml)
+            builder.insert(index + 9,kLocalHostFloorAt)
+            parsedHtml = builder.toString()
+        }
+        return parsedHtml
     }
-     companion object Factory{
-        var instance : NetworkUtils?=null
 
-        fun getInstace(context: Context): NetworkUtils?{
+    companion object Factory {
+        var instance: NetworkUtils? = null
+        val kLocalHostUser: String = "http://localhost/user"
+        val kLocalHostFloorAt:String="http://localhost/floor_at"
+        fun getInstace(context: Context): NetworkUtils? {
 
-            if(instance == null){
+            if (instance == null) {
                 instance = NetworkUtils(context)
             }
 
