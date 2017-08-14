@@ -21,6 +21,8 @@ import android.widget.ImageView
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
 import com.zqlite.android.diycode.R
+import com.zqlite.android.logly.Logly
+import java.util.regex.Pattern
 
 /**
  * Created by scott on 2017/8/11.
@@ -36,6 +38,18 @@ class NetworkUtils(context :Context) {
         picsso!!.load(url).error(defaultId).into(imageView)
     }
 
+    fun getReplyClickable(html:String):String{
+        var pattern : Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
+        var matcher = pattern.matcher(html)
+        if(matcher.find()){
+            var s = matcher.group()
+            var index = html.indexOf(s)
+            var builder : StringBuilder = StringBuilder(html)
+            builder.insert(index + 9,"http://localhost")
+            return builder.toString()
+        }
+        return html
+    }
      companion object Factory{
         var instance : NetworkUtils?=null
 

@@ -19,6 +19,7 @@ package com.zqlite.android.diycode
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.util.regex.Pattern
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -26,8 +27,18 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun parseHtml(){
+        var pattern : Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
+        var html = "<p><a href=\"#reply1\" class=\"at_floor\" data-floor=\"1\">#1楼</a> <a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a> 我写的是社区首页的地址，这个对app应该没什么影响。<a href=\"/luhaoaimama1\" class=\"at_user\" title=\"@luhaoaimama1\"><i>@</i>luhaoaimama1</a></p>"
+        var matcher = pattern.matcher(html)
+        if(matcher.find()){
+            var s = matcher.group()
+            var index = html.indexOf(s)
+            var builder : StringBuilder = StringBuilder(html)
+            builder.insert(index + 9,"http://localhost")
+            println(builder.toString())
+        }
     }
 }

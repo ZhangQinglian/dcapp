@@ -86,7 +86,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
     }
 
-    override fun nodesOk(nodes: List<Node>) {
+    override fun nodesOk(nodes: MutableList<Node>) {
         mNodeAdapter = NodeAdapter(nodes)
         if(mNodeAdapter!!.itemCount > 0){
             mPresenter!!.loadTopic()
@@ -139,7 +139,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
                 val inflater : LayoutInflater = LayoutInflater.from(context)
                 val view = inflater.inflate(R.layout.listitem_topic_node,parent,false)
                 val recyclerView :RecyclerView = view as RecyclerView
-                val linearLayoutManager : StaggeredGridLayoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL)
+                val linearLayoutManager : LinearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                 recyclerView.layoutManager = linearLayoutManager
                 return TopicNodeHolder(view)
             }
@@ -151,7 +151,6 @@ class TopicFragment : BaseFragment(),TopicContract.View {
                 val topic = topicList[position]
                 (itemHolder as TopicItemHolder).bind(topic)
                 if(position == topicList.size - 1){
-                    Toast.makeText(context,"loat next",Toast.LENGTH_SHORT).show()
                     mPresenter!!.loadNextPage()
                 }
 
@@ -220,7 +219,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
         fun go(position : Int){
             val recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
-            recyclerView.smoothScrollToPosition(position)
+            recyclerView.scrollToPosition(position)
         }
     }
 
@@ -229,10 +228,10 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             bingding.setVariable(BR.node,node)
             bingding.executePendingBindings()
             if(node.id == mPresenter!!.getCurrentNodeId()){
-                bingding.nodeWrapper.background = resources.getDrawable(R.drawable.topic_node_bg_select)
+                bingding.nodeText.background = resources.getDrawable(R.drawable.topic_node_bg_select)
                 bingding.nodeText.setTextColor(resources.getColor(R.color.colorPrimary))
             }else{
-                bingding.nodeWrapper.background = resources.getDrawable(R.drawable.topic_node_bg_normal)
+                bingding.nodeText.background = resources.getDrawable(R.drawable.topic_node_bg_normal)
                 bingding.nodeText.setTextColor(Color.WHITE)
             }
 

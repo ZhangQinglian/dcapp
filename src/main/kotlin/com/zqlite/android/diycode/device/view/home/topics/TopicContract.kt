@@ -44,6 +44,6 @@ interface TopicContract {
     interface View : IView<Presenter>{
         fun updateTopicList(topicList:List<Topic>)
         fun addTopicList(topicList: List<Topic>)
-        fun nodesOk(nodes : List<Node>)
+        fun nodesOk(nodes : MutableList<Node>)
     }
 }

@@ -22,6 +22,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.zqlite.android.dclib.entiry.TopicDetail
 import com.zqlite.android.dclib.entiry.TopicReply
@@ -31,6 +36,8 @@ import com.zqlite.android.diycode.databinding.ListitemTopicDetailHeadBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.diycode.device.web.DcWebViewClient
+import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
 
 /**
@@ -150,6 +157,36 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             css.addRule("body", "padding: 0px")
             binding.markdownView.addStyleSheet(css)
             binding.markdownView.loadMarkdown(topicDetail.getContentWithTitle())
+            binding.markdownView.setOnElementListener(object : MarkdownView.OnElementListener{
+                        override fun onLinkTap(p0: String?, p1: String?) {
+                            Logly.d("onLinkTap")
+                        }
+
+                        override fun onButtonTap(p0: String?) {
+                            Logly.d("onButtonTap")
+                        }
+
+                        override fun onMarkTap(p0: String?) {
+                            Logly.d("onMarkTap")
+                        }
+
+                        override fun onCodeTap(p0: String?, p1: String?) {
+                            Logly.d("onCodeTap")
+                        }
+
+                        override fun onHeadingTap(p0: Int, p1: String?) {
+                            Logly.d("onHeadingTap")
+                        }
+
+                        override fun onImageTap(p0: String?, p1: Int, p2: Int) {
+                            Logly.d("onImageTap")
+                        }
+
+                        override fun onKeystrokeTap(p0: String?) {
+                            Logly.d("onKeystrokeTap")
+                        }
+
+                    })
         }
     }
 
@@ -161,7 +198,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             var css = Github()
             css.addRule("body", "padding: 0px")
             binding.markdownView.addStyleSheet(css)
-            binding.markdownView.loadMarkdown(topicReply.bodyHtml)
+            binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html",null)
+            binding.markdownView.webViewClient = DcWebViewClient()
         }
     }
 

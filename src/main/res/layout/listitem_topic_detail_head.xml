@@ -29,7 +29,8 @@
         android:background="@android:color/white"
         android:layout_marginBottom="15dp"
         android:clickable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:paddingBottom="10dp">
 
 
         <de.hdodenhof.circleimageview.CircleImageView

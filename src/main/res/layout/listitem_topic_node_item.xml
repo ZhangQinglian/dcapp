@@ -23,18 +23,21 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/node_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/topic_node_bg_normal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_margin="3dp">
+        android:layout_height="match_parent"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/node_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
+            android:background="@drawable/topic_node_bg_normal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:textSize="14sp"
-            android:text="@{node.name}"/>
+            android:text="@{node.name}"
+            android:layout_gravity="center_vertical"/>
     </FrameLayout>
 </layout>

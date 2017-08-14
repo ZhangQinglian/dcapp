@@ -21,6 +21,8 @@ import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.*
+import kotlin.Comparator
 
 /**
  * Created by scott on 2017/8/11.
@@ -66,6 +68,9 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
             val nodeList : MutableList<Node> = mutableListOf()
             val nodeAll : Node = Node(-1,"所有",-1,"","",-1,"","")
             nodeList.add(nodeAll)
+            Collections.sort(it,{n1,n2->
+                n2.topicsCount - n1.topicsCount
+            })
             nodeList.addAll(it)
             mView.nodesOk(nodeList)
         }
@@ -88,7 +93,6 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
 
     override fun loadNextPage() {
         var newOffset = currentOffset + LIMIT
-        Logly.d("new offset = " + newOffset)
         if(currentNodeId == -1){
 
             DiyCodeApi.loadTopic(newOffset, limit = LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
