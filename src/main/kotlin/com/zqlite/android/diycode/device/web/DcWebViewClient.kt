@@ -16,10 +16,11 @@
 
 package com.zqlite.android.diycode.device.web
 
+import android.content.Intent
+import android.net.Uri
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.zqlite.android.diycode.device.utils.NetworkUtils
-import com.zqlite.android.logly.Logly
 
 /**
  * Created by scott on 2017/8/14.
@@ -29,6 +30,8 @@ class DcWebViewClient(val callback: Callback) : WebViewClient() {
     interface Callback{
         fun goFloor(floor:Int)
         fun goUser(userLogin:String)
+        fun goTopic(id :Int)
+        fun openBrowser(url:String)
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -36,12 +39,22 @@ class DcWebViewClient(val callback: Callback) : WebViewClient() {
         if(url!!.contains(NetworkUtils.kLocalHostUser)){
             val userLogin = url.substring(NetworkUtils.kLocalHostUser.length+1)
             callback.goUser(userLogin)
+            return true
         }
         if(url!!.contains(NetworkUtils.kLocalHostFloorAt)){
             var floorAt = url.substring(NetworkUtils.kLocalHostFloorAt.length+1)
             var n = floorAt.substring(5)
             callback.goFloor(n.toInt())
+            return true
         }
+        if(url!!.contains(NetworkUtils.kTopicDetail)){
+            var topicId = url.substring(NetworkUtils.kTopicDetail.length)
+            var n = topicId.toInt()
+            callback.goTopic(n)
+            return true
+        }
+        callback.openBrowser(url)
+
         return true
     }
 }

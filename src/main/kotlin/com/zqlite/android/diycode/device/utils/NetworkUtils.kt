@@ -69,6 +69,7 @@ class NetworkUtils(context: Context) {
         var instance: NetworkUtils? = null
         val kLocalHostUser: String = "http://localhost/user"
         val kLocalHostFloorAt:String="http://localhost/floor_at"
+        val kTopicDetail :String = "https://www.diycode.cc/topics/"
         fun getInstace(context: Context): NetworkUtils? {
 
             if (instance == null) {

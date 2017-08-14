@@ -4,6 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="topic_detail">主题</string>
+    <string name="user_detail">个人中心</string>
     <string name="topic_hits">阅读</string>
     <string name="topic_likes">喜欢</string>
 

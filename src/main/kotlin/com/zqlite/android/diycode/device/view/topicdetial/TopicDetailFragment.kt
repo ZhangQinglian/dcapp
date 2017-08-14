@@ -16,6 +16,8 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -36,6 +38,7 @@ import com.zqlite.android.diycode.databinding.ListitemTopicDetailHeadBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
 import com.zqlite.android.diycode.device.web.DcWebViewClient
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
@@ -201,11 +204,27 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.markdownView.addStyleSheet(css)
             binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html",null)
             binding.markdownView.webViewClient = DcWebViewClient(object :DcWebViewClient.Callback{
+                override fun openBrowser(url: String) {
+                    val intent :Intent = Intent(Intent.ACTION_VIEW)
+                    val uri : Uri = Uri.parse(url)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+
+                override fun goTopic(id: Int) {
+                    var intent : Intent = Intent(context,TopicDetailActivity::class.java)
+                    intent.putExtra("topicId",id)
+                    startActivity(intent)
+                }
+
                 override fun goFloor(floor: Int) {
                     topic_detail.smoothScrollToPosition(floor)
                 }
 
                 override fun goUser(userLogin: String) {
+                    val intent = Intent(context,UserDetailActivity::class.java)
+                    intent.putExtra(UserDetailActivity.Companion.kUserLoiginKey,userLogin)
+                    startActivity(intent)
                 }
             })
         }

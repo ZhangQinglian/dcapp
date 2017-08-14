@@ -147,7 +147,7 @@ class SlideView : FrameLayout {
         if (d == 0L) {
             d = ((screenWidth - getChildAt(0).x) / 2).toLong()
         }
-        getChildAt(0).animate().translationX(screenWidth.toFloat()).setDuration(duration).setListener(object : Animator.AnimatorListener {
+        getChildAt(0).animate().translationX(screenWidth.toFloat()).setDuration(d).setListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {
 
             }

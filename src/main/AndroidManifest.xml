@@ -28,6 +28,12 @@
             android:label="@string/app_name"
             android:theme="@style/SlideStyle"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity"
+            android:label="@string/app_name"
+            android:theme="@style/SlideStyle"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
