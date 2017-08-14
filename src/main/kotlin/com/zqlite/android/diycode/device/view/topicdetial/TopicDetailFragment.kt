@@ -153,57 +153,53 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     inner abstract class TopicDetailHodler(view: View) : RecyclerView.ViewHolder(view)
 
     inner class TopicDetailHeadHolder(var binding: ListitemTopicDetailHeadBinding) : TopicDetailHodler(binding.root) {
+        init {
+            val css = Github()
+            css.addRule("body", "padding: 0px")
+            binding.markdownView.addStyleSheet(css)
+            binding.markdownView.setOnElementListener(object : MarkdownView.OnElementListener{
+                override fun onLinkTap(p0: String?, p1: String?) {
+                    Logly.d("onLinkTap")
+                }
+
+                override fun onButtonTap(p0: String?) {
+                    Logly.d("onButtonTap")
+                }
+
+                override fun onMarkTap(p0: String?) {
+                    Logly.d("onMarkTap")
+                }
+
+                override fun onCodeTap(p0: String?, p1: String?) {
+                    Logly.d("onCodeTap")
+                }
+
+                override fun onHeadingTap(p0: Int, p1: String?) {
+                    Logly.d("onHeadingTap")
+                }
+
+                override fun onImageTap(p0: String?, p1: Int, p2: Int) {
+                    Logly.d("onImageTap")
+                }
+
+                override fun onKeystrokeTap(p0: String?) {
+                    Logly.d("onKeystrokeTap")
+                }
+
+            })
+        }
         fun bind(topicDetail: TopicDetail) {
             binding.setVariable(BR.topicDetail, topicDetail)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicDetail.user.avatarUrl, R.drawable.default_avatar)
-            var css = Github()
-            css.addRule("body", "padding: 0px")
-            binding.markdownView.addStyleSheet(css)
             binding.markdownView.loadMarkdown(topicDetail.getContentWithTitle())
-            binding.markdownView.setOnElementListener(object : MarkdownView.OnElementListener{
-                        override fun onLinkTap(p0: String?, p1: String?) {
-                            Logly.d("onLinkTap")
-                        }
 
-                        override fun onButtonTap(p0: String?) {
-                            Logly.d("onButtonTap")
-                        }
-
-                        override fun onMarkTap(p0: String?) {
-                            Logly.d("onMarkTap")
-                        }
-
-                        override fun onCodeTap(p0: String?, p1: String?) {
-                            Logly.d("onCodeTap")
-                        }
-
-                        override fun onHeadingTap(p0: Int, p1: String?) {
-                            Logly.d("onHeadingTap")
-                        }
-
-                        override fun onImageTap(p0: String?, p1: Int, p2: Int) {
-                            Logly.d("onImageTap")
-                        }
-
-                        override fun onKeystrokeTap(p0: String?) {
-                            Logly.d("onKeystrokeTap")
-                        }
-
-                    })
         }
     }
 
     inner class TopicReplyHolder(var binding:ListitemTopicReplyBinding):TopicDetailHodler(binding.root){
-        fun bind(topicReply: TopicReply){
-            binding.setVariable(BR.topicReply,topicReply)
-            binding.executePendingBindings()
-            NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
-            binding.floorAt.text = getString(R.string.floor_at,adapterPosition)
-            var css = Github()
-            css.addRule("body", "padding: 0px")
-            binding.markdownView.addStyleSheet(css)
-            binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html; charset=UTF-8",null)
+
+        init {
             binding.markdownView.webViewClient = DcWebViewClient(object :DcWebViewClient.Callback{
                 override fun openBrowser(url: String) {
                     val intent :Intent = Intent(Intent.ACTION_VIEW)
@@ -224,6 +220,16 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                     Route.goUserDetail(activity,userLogin)
                 }
             })
+            val settings = binding.markdownView.settings
+            settings.defaultFontSize = 13
+        }
+
+        fun bind(topicReply: TopicReply){
+            binding.setVariable(BR.topicReply,topicReply)
+            binding.executePendingBindings()
+            NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
+            binding.floorAt.text = getString(R.string.floor_at,adapterPosition)
+            binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html; charset=UTF-8",null)
         }
     }
 
