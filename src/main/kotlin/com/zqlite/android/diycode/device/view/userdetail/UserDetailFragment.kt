@@ -28,6 +28,10 @@ class UserDetailFragment : BaseFragment(),UserDetailContract.View {
 
     private var mPresenter : UserDetailContract.Presenter ? = null
 
+    interface Callback{
+        fun userUpdate(userDetail: UserDetail)
+    }
+
     override fun setPresenter(presenter: UserDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -43,6 +47,7 @@ class UserDetailFragment : BaseFragment(),UserDetailContract.View {
     }
 
     override fun updateUser(user: UserDetail) {
+        (activity as UserDetailFragment.Callback).userUpdate(user)
     }
 
     companion object Factory{

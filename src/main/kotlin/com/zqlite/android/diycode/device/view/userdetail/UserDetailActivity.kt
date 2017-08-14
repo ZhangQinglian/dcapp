@@ -16,16 +16,17 @@
 
 package com.zqlite.android.diycode.device.view.userdetail
 
-import android.widget.Toast
+import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.R
+import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseActivity
 import com.zqlite.android.diycode.device.view.custom.DecorViewProxy
-import kotlinx.android.synthetic.main.activity_topic_detail.*
+import kotlinx.android.synthetic.main.activity_user_detail.*
 
 /**
  * Created by scott on 2017/8/14.
  */
-class UserDetailActivity:BaseActivity() {
+class UserDetailActivity:BaseActivity() ,UserDetailFragment.Callback{
 
     private var mPresenter:UserDetailContract.Presenter? = null
 
@@ -57,6 +58,7 @@ class UserDetailActivity:BaseActivity() {
         val extra = intent.extras
         if(extra != null){
             val login :String= extra[kUserLoiginKey] as String
+            supportActionBar!!.title=login
             mPresenter!!.loadUser(login)
         }
     }
@@ -64,4 +66,9 @@ class UserDetailActivity:BaseActivity() {
     companion object {
         val kUserLoiginKey = "login"
     }
+
+    override fun userUpdate(userDetail: UserDetail) {
+        NetworkUtils.getInstace(this)!!.loadImage(avatar,userDetail.avatarUrl,R.drawable.default_avatar)
+    }
+
 }

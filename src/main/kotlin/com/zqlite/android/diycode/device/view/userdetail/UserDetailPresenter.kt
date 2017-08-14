@@ -17,7 +17,6 @@
 package com.zqlite.android.diycode.device.view.userdetail
 
 import com.zqlite.android.dclib.DiyCodeApi
-import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -37,7 +36,7 @@ class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContr
 
     override fun loadUser(login: String) {
         DiyCodeApi.loadUserDetail(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            Logly.d(it.toString())
+            mView.updateUser(it)
         }
     }
 }

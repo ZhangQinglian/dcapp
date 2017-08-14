@@ -33,6 +33,7 @@ import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicNodeItemBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
+import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.logly.Logly
@@ -204,9 +205,10 @@ class TopicFragment : BaseFragment(),TopicContract.View {
             binding.executePendingBindings()
             NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
             binding.root.setOnClickListener {
-                var intent : Intent = Intent(context,TopicDetailActivity::class.java)
-                intent.putExtra("topicId",topic.id)
-                startActivity(intent)
+                Route.goTopicDetail(activity,topic.id)
+            }
+            binding.avatar.setOnClickListener {
+                Route.goUserDetail(activity,topic.user.login)
             }
         }
     }

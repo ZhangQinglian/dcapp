@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title"
                     android:layout_marginTop="10dp"
-                    android:text="@{topic.getCreatedAtDes}"
+                    android:text="@{topic.getCreatedAtDes()}"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/created_at"
-                    android:text="@{topic.getRepliedAtDes}"
+                    android:text="@{topic.getRepliedAtDes()}"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
