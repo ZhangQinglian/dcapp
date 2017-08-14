@@ -42,8 +42,8 @@
         android:id="@+id/user_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgGray"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="@color/colorPrimaryDark"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar"
         android:layout_width="80dp"
@@ -51,5 +51,6 @@
         android:layout_marginRight="10dp"
         app:layout_anchor="@id/appbar_layout"
         app:layout_anchorGravity="bottom|end"
-        android:src="@drawable/default_avatar"/>
+        android:src="@drawable/default_avatar"
+        app:layout_behavior="com.zqlite.android.diycode.device.view.userdetail.UserAvatarBehavior"/>
 </android.support.design.widget.CoordinatorLayout>
