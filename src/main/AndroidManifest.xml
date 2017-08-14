@@ -26,7 +26,7 @@
         <activity
             android:name="com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SlideStyle"
             android:screenOrientation="portrait"/>
     </application>
 
