@@ -43,13 +43,11 @@ import kotlinx.android.synthetic.main.fragment_topic_detail.*
 /**
  * Created by scott on 2017/8/11.
  */
-class TopicFragment : BaseFragment(),TopicContract.View {
+class TopicFragment : BaseFragment(), TopicContract.View {
 
-    private var mPresenter : TopicContract.Presenter?=null
+    private var mPresenter: TopicContract.Presenter? = null
 
-    private val mAdapter : TopicAdapter = TopicAdapter()
-
-    private var mNodeAdapter : NodeAdapter? = null
+    private val mAdapter: TopicAdapter = TopicAdapter()
 
     override fun onStart() {
         super.onStart()
@@ -70,7 +68,7 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     }
 
     override fun initView() {
-        val linearLayoutManager : LinearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        val linearLayoutManager: LinearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         topic_list.layoutManager = linearLayoutManager
         topic_list.adapter = mAdapter
 
@@ -87,14 +85,9 @@ class TopicFragment : BaseFragment(),TopicContract.View {
 
     }
 
-    override fun nodesOk(nodes: MutableList<Node>) {
-        mNodeAdapter = NodeAdapter(nodes)
-        if(mNodeAdapter!!.itemCount > 0){
-            mPresenter!!.loadTopic()
-        }
-    }
+
     override fun updateTopicList(topicList: List<Topic>) {
-        if(topic_fresh_layout.isRefreshing){
+        if (topic_fresh_layout.isRefreshing) {
             topic_fresh_layout.isRefreshing = false
         }
         mAdapter.updateList(topicList)
@@ -105,144 +98,67 @@ class TopicFragment : BaseFragment(),TopicContract.View {
     }
 
 
-    companion object Factory{
-        fun getInstance(bundle : Bundle?) : TopicFragment{
+    companion object Factory {
+        fun getInstance(bundle: Bundle?): TopicFragment {
             var tf = TopicFragment()
-            if(bundle != null){
+            if (bundle != null) {
                 tf.arguments = bundle
             }
             return tf
         }
     }
 
-    private inner class TopicAdapter : RecyclerView.Adapter<TopicHolder>(){
+    private inner class TopicAdapter : RecyclerView.Adapter<TopicHolder>() {
 
-        private var topicList : MutableList<Topic> = mutableListOf()
+        private var topicList: MutableList<Topic> = mutableListOf()
 
-        fun updateList(data:List<Topic>){
+        fun updateList(data: List<Topic>) {
             topicList.clear()
-            //加一个虚假Topic用于顶部Node列表占位
-            topicList.add(Topic.getMockTopic())
             topicList.addAll(data)
             notifyDataSetChanged()
+            topic_list.scrollToPosition(0)
         }
 
-        fun addTopicList(data:List<Topic>){
+        fun addTopicList(data: List<Topic>) {
             topicList.addAll(data)
-            notifyItemRangeChanged(topicList.size - 1 - data.size,data.size)
+            notifyItemRangeChanged(topicList.size - 1 - data.size, data.size)
         }
+
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicHolder {
-            if(viewType == 0){
-                val inflater : LayoutInflater = LayoutInflater.from(context)
-                val listItemTopicBinding : ListitemTopicBinding = ListitemTopicBinding.inflate(inflater,parent,false)
-                return TopicItemHolder(listItemTopicBinding)
-            }else{
-                val inflater : LayoutInflater = LayoutInflater.from(context)
-                val view = inflater.inflate(R.layout.listitem_topic_node,parent,false)
-                val recyclerView :RecyclerView = view as RecyclerView
-                val linearLayoutManager : LinearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-                recyclerView.layoutManager = linearLayoutManager
-                return TopicNodeHolder(view)
-            }
+            val inflater: LayoutInflater = LayoutInflater.from(context)
+            val listItemTopicBinding: ListitemTopicBinding = ListitemTopicBinding.inflate(inflater, parent, false)
+            return TopicItemHolder(listItemTopicBinding)
 
         }
 
         override fun onBindViewHolder(itemHolder: TopicHolder?, position: Int) {
-            if(getItemViewType(position) == 0){
-                val topic = topicList[position]
-                (itemHolder as TopicItemHolder).bind(topic)
-                if(position == topicList.size - 1){
-                    mPresenter!!.loadNextPage()
-                }
-
-            }else{
-                (itemHolder as TopicNodeHolder).setAdapter(mNodeAdapter!!)
-                mNodeAdapter!!.notifyDataSetChanged()
-                itemHolder.go(mPresenter!!.getCurrentNodePosition())
-
+            val topic = topicList[position]
+            (itemHolder as TopicItemHolder).bind(topic)
+            if (position == topicList.size - 1) {
+                mPresenter!!.loadNextPage()
             }
-
         }
 
         override fun getItemCount(): Int {
             return topicList.size
         }
 
-        override fun getItemViewType(position: Int): Int {
-            if(position >0) return 0
-            return 1
-        }
-
     }
 
-    private inner class NodeAdapter(val nodes:List<Node>) :RecyclerView.Adapter<NodeItemHolder>(){
+    private inner abstract class TopicHolder(view: View) : RecyclerView.ViewHolder(view)
 
-        override fun getItemCount(): Int {
-            return nodes.size
-        }
-
-        override fun onBindViewHolder(holder: NodeItemHolder?, position: Int) {
-            holder!!.bind(nodes[position])
-
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): NodeItemHolder {
-            val inflater : LayoutInflater = LayoutInflater.from(context)
-            val binding : ListitemTopicNodeItemBinding = ListitemTopicNodeItemBinding.inflate(inflater,parent,false)
-            return NodeItemHolder(binding)
-        }
-
-        fun getNodeAt(index :Int) : Node{
-            return nodes[index]
-        }
-    }
-
-    private inner abstract class TopicHolder(view : View) : RecyclerView.ViewHolder(view)
-
-    private inner class TopicItemHolder(var binding : ListitemTopicBinding) : TopicHolder(binding.root){
-        fun bind(topic: Topic){
-            binding.setVariable(BR.topic,topic)
+    private inner class TopicItemHolder(var binding: ListitemTopicBinding) : TopicHolder(binding.root) {
+        fun bind(topic: Topic) {
+            binding.setVariable(BR.topic, topic)
             binding.executePendingBindings()
-            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar,topic.user.avatarUrl,R.drawable.default_avatar)
+            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar, topic.user.avatarUrl, R.drawable.default_avatar)
             binding.root.setOnClickListener {
-                Route.goTopicDetail(activity,topic.id)
+                Route.goTopicDetail(activity, topic.id)
             }
             binding.avatar.setOnClickListener {
-                Route.goUserDetail(activity,topic.user.login)
+                Route.goUserDetail(activity, topic.user.login)
             }
         }
     }
 
-    private inner class TopicNodeHolder(view :View):TopicHolder(view){
-        fun setAdapter(adapter : NodeAdapter){
-            val recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
-            recyclerView.adapter = adapter
-        }
-
-        fun go(position : Int){
-            val recyclerView = itemView.findViewById<RecyclerView>(R.id.node_list)
-            recyclerView.scrollToPosition(position)
-        }
-    }
-
-    private inner class NodeItemHolder(var bingding:ListitemTopicNodeItemBinding):RecyclerView.ViewHolder(bingding.root){
-        fun bind(node:Node){
-            bingding.setVariable(BR.node,node)
-            bingding.executePendingBindings()
-            if(node.id == mPresenter!!.getCurrentNodeId()){
-                bingding.nodeText.background = resources.getDrawable(R.drawable.topic_node_bg_select)
-                bingding.nodeText.setTextColor(resources.getColor(R.color.colorPrimary))
-            }else{
-                bingding.nodeText.background = resources.getDrawable(R.drawable.topic_node_bg_normal)
-                bingding.nodeText.setTextColor(Color.WHITE)
-            }
-
-            bingding.root.setOnClickListener {
-                var p : Int = adapterPosition
-                var node : Node = mNodeAdapter!!.getNodeAt(p)
-                topic_fresh_layout.isRefreshing = true
-                mPresenter!!.setCurrentNode(node.id,p)
-            }
-        }
-    }
 }

@@ -18,6 +18,8 @@ package com.zqlite.android.diycode.device.view.home.topics
 
 import com.zqlite.android.dclib.DiyCodeApi
 import com.zqlite.android.dclib.entiry.Node
+import com.zqlite.android.diycode.device.view.home.Category
+import com.zqlite.android.diycode.device.view.home.HomeContract
 import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -27,7 +29,7 @@ import kotlin.Comparator
 /**
  * Created by scott on 2017/8/11.
  */
-class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
+class TopicPresenter(var mView: TopicContract.View,var mCategoryCallback: HomeContract.CategoryCallback) : TopicContract.Presenter {
 
     private val LIMIT : Int = 20
 
@@ -54,10 +56,12 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
         if(currentNodeId == -1){
             DiyCodeApi.loadTopic(offset, limit).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
                 mView.updateTopicList(it)
+                mCategoryCallback.justUpdateSelf()
             }
         }else{
             DiyCodeApi.loadTopic(offset,limit,nodeId = currentNodeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe{
                 mView.updateTopicList(it)
+                mCategoryCallback.justUpdateSelf()
             }
         }
 
@@ -72,7 +76,8 @@ class TopicPresenter(var mView: TopicContract.View) : TopicContract.Presenter {
                 n2.topicsCount - n1.topicsCount
             })
             nodeList.addAll(it)
-            mView.nodesOk(nodeList)
+            mCategoryCallback.updateCategory(Category.TYPE_TOPIC,nodeList.map { Category(it) })
+            loadTopic()
         }
     }
 

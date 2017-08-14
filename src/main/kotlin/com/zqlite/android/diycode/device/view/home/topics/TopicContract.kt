@@ -18,6 +18,7 @@ package com.zqlite.android.diycode.device.view.home.topics
 
 import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.dclib.entiry.Topic
+import com.zqlite.android.diycode.device.view.home.Category
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
@@ -25,6 +26,8 @@ import com.zqlite.android.diycode.device.view.imvp.IView
  * Created by scott on 2017/8/11.
  */
 interface TopicContract {
+
+
 
     interface Presenter : IPresenter{
 
@@ -44,6 +47,5 @@ interface TopicContract {
     interface View : IView<Presenter>{
         fun updateTopicList(topicList:List<Topic>)
         fun addTopicList(topicList: List<Topic>)
-        fun nodesOk(nodes : MutableList<Node>)
     }
 }

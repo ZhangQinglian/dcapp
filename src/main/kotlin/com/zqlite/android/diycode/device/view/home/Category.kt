@@ -16,21 +16,12 @@
 
 package com.zqlite.android.diycode.device.view.home
 
-import com.zqlite.android.diycode.device.view.imvp.IPresenter
-import com.zqlite.android.diycode.device.view.imvp.IView
-
 /**
- * Created by scott on 2017/8/11.
+ * Created by scott on 2017/8/14.
  */
+class Category(val data : Any) {
 
-interface HomeContract{
-
-    interface CategoryCallback{
-        fun updateCategory(type : Int,categories : List<Category>)
-        fun justUpdateSelf()
+    companion object Type{
+        val TYPE_TOPIC : Int = 1
     }
-    interface Presenter : IPresenter
-
-    interface View : IView<Presenter>
 }
-
