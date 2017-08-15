@@ -205,6 +205,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.markdownView.linksClickable =true
             binding.markdownView.movementMethod = LinkMovementMethod.getInstance()
             binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml))
+            binding.root.setOnClickListener {
+                Logly.d("touch")
+            }
         }
     }
 
