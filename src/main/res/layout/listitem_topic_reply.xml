@@ -76,6 +76,7 @@
             android:layout_below="@id/avatar"
             android:layout_toRightOf="@id/avatar"
             android:textSize="13sp"
+            android:layout_marginRight="10dp"
             android:textColor="@android:color/black"/>
 
         <TextView
