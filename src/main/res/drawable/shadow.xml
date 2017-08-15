@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~    Copyright 2017 zhangqinglian
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +15,10 @@
   ~    limitations under the License.
   -->
 
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/user_detail_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-</android.support.v7.widget.RecyclerView>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#64606060"
+        android:endColor="#00000000"
+        android:angle="270" />
+</shape>
