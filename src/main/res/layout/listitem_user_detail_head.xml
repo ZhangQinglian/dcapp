@@ -20,6 +20,8 @@
         <variable
             name="userDetail"
             type="com.zqlite.android.dclib.entiry.UserDetail"/>
+
+        <import type="android.view.View"/>
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,13 +61,27 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{userDetail.bio}"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                android:layout_below="@id/username"
+                android:layout_centerHorizontal="true"
+                android:visibility="@{userDetail.hasBis()?View.VISIBLE:View.GONE}"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"/>
+            <TextView
                 android:id="@+id/followers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{userDetail.getFollowCountDes}"
                 android:textSize="13sp"
                 android:textColor="@android:color/darker_gray"
-                android:layout_below="@id/username"
+                android:layout_below="@id/bio"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"/>
 
