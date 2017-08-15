@@ -16,18 +16,18 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.zqlite.android.dclib.entiry.TopicDetail
@@ -39,8 +39,6 @@ import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.view.BaseFragment
-import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
-import com.zqlite.android.diycode.device.web.DcWebViewClient
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
 
@@ -199,37 +197,14 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     inner class TopicReplyHolder(var binding:ListitemTopicReplyBinding):TopicDetailHodler(binding.root){
 
-        init {
-            binding.markdownView.webViewClient = DcWebViewClient(object :DcWebViewClient.Callback{
-                override fun openBrowser(url: String) {
-                    val intent :Intent = Intent(Intent.ACTION_VIEW)
-                    val uri : Uri = Uri.parse(url)
-                    intent.data = uri
-                    startActivity(intent)
-                }
-
-                override fun goTopic(id: Int) {
-                    Route.goTopicDetail(activity,id)
-                }
-
-                override fun goFloor(floor: Int) {
-                    topic_detail.smoothScrollToPosition(floor)
-                }
-
-                override fun goUser(userLogin: String) {
-                    Route.goUserDetail(activity,userLogin)
-                }
-            })
-            val settings = binding.markdownView.settings
-            settings.defaultFontSize = 13
-        }
-
         fun bind(topicReply: TopicReply){
             binding.setVariable(BR.topicReply,topicReply)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
             binding.floorAt.text = getString(R.string.floor_at,adapterPosition)
-            binding.markdownView.loadData(NetworkUtils.instance!!.getReplyClickable(topicReply.bodyHtml),"text/html; charset=UTF-8",null)
+            binding.markdownView.linksClickable =true
+            binding.markdownView.movementMethod = LinkMovementMethod.getInstance()
+            binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml))
         }
     }
 
@@ -241,5 +216,41 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             }
             return fragment
         }
+    }
+
+    private fun addSpann(spanned: Spanned):Spanned{
+        val spanBuilder = SpannableStringBuilder(spanned)
+        val urlSpans = spanBuilder.getSpans(0,spanBuilder.length,URLSpan::class.java)
+        for(span in urlSpans){
+            val start = spanBuilder.getSpanStart(span)
+            val end = spanBuilder.getSpanEnd(span)
+            val flags = spanBuilder.getSpanFlags(span)
+            val clickableSpan : ClickableSpan =object : ClickableSpan() {
+                override fun onClick(p0: View?) {
+                    Logly.d("  on click " + span.url)
+                    route(span.url)
+                }
+
+            }
+            spanBuilder.setSpan(clickableSpan,start,end,flags)
+            spanBuilder.removeSpan(span)
+        }
+        return spanBuilder
+    }
+
+    private fun route(url:String){
+        if(url.startsWith("#reply")){
+            var floor = url.substring(6).toInt()
+            topic_detail.smoothScrollToPosition(floor)
+        }
+        if(url.startsWith("/")){
+            var login = url.substring(1)
+            Route.goUserDetail(activity,login)
+        }
+        if(url.startsWith("https://www.diycode.cc/topics/")){
+            var topicId = url.substring("https://www.diycode.cc/topics/".length).toInt()
+            Route.goTopicDetail(activity,topicId)
+        }
+
     }
 }
