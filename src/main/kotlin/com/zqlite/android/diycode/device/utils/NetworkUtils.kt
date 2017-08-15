@@ -38,7 +38,7 @@ class NetworkUtils(context: Context) {
     }
 
     fun loadImage(imageView: ImageView, url: String, defaultId: Int) {
-        picsso!!.load(url).error(defaultId).into(imageView)
+        picsso!!.load(url).placeholder(R.drawable.ic_launcher_background).error(defaultId).into(imageView)
     }
 
     fun getReplyClickable(html: String): String {
