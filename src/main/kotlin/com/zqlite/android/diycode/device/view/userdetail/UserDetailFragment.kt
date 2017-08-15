@@ -22,12 +22,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebViewClient
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemUserDetailHeadBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
+import com.zqlite.android.diycode.device.utils.Route
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_user_detail.*
 
@@ -121,6 +122,11 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         fun bind(userDetail: UserDetail) {
             binding.setVariable(BR.userDetail,userDetail)
             NetworkUtils.getInstace(context)!!.loadImage(binding.userAvatar,userDetail.avatarUrl,R.drawable.default_avatar)
+            binding.follow.setOnClickListener{
+                if(TokenStore.getAccessToken(context).isEmpty()){
+                    Route.goLogin(activity)
+                }
+            }
         }
     }
 

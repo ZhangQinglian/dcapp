@@ -14,26 +14,22 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.topicdetial
+package com.zqlite.android.diycode.device.view.login
 
-import com.zqlite.android.dclib.entiry.TopicDetail
-import com.zqlite.android.dclib.entiry.TopicReply
+import com.zqlite.android.dclib.entiry.Token
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
 /**
- * Created by scott on 2017/8/13.
+ * Created by scott on 2017/8/15.
  */
-interface TopicDetailContract {
+interface LoginContract {
 
     interface Presenter : IPresenter{
-        fun loadTopicDetail(id:Int)
-        fun loadTopicReplies(id:Int)
-        fun followTopic(topicId:Int)
+        fun login(loginName:String,password:String)
     }
 
-    interface View : IView<Presenter>{
-        fun updateTopicDetail(topicDetal : TopicDetail)
-        fun updateReplies(replies : List<TopicReply>)
+    interface View :IView<LoginContract.Presenter>{
+        fun updateToken(token:Token)
     }
 }

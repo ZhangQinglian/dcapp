@@ -57,4 +57,7 @@ dependencies {
 
     //markdown
     implementation 'com.github.tiagohm.MarkdownView:library:0.17.0'
+
+    //text field
+    compile 'com.github.florent37:materialtextfield:1.0.7'
 }

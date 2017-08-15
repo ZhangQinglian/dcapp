@@ -14,26 +14,24 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.topicdetial
+package com.zqlite.android.diycode.device.view
 
-import com.zqlite.android.dclib.entiry.TopicDetail
-import com.zqlite.android.dclib.entiry.TopicReply
-import com.zqlite.android.diycode.device.view.imvp.IPresenter
-import com.zqlite.android.diycode.device.view.imvp.IView
+import android.app.Application
+import com.zqlite.android.dclib.DiyCodeApi
+import com.zqlite.android.diycode.device.utils.TokenStore
 
 /**
- * Created by scott on 2017/8/13.
+ * Created by scott on 2017/8/15.
  */
-interface TopicDetailContract {
+class DCApplication : Application(),DiyCodeApi.Callback {
 
-    interface Presenter : IPresenter{
-        fun loadTopicDetail(id:Int)
-        fun loadTopicReplies(id:Int)
-        fun followTopic(topicId:Int)
+
+    override fun onCreate() {
+        super.onCreate()
+        DiyCodeApi.init(this)
     }
 
-    interface View : IView<Presenter>{
-        fun updateTopicDetail(topicDetal : TopicDetail)
-        fun updateReplies(replies : List<TopicReply>)
+    override fun getToken(): String {
+        return TokenStore.getAccessToken(this)
     }
 }

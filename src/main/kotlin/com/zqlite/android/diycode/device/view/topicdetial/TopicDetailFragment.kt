@@ -38,6 +38,7 @@ import com.zqlite.android.diycode.databinding.ListitemTopicDetailHeadBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
@@ -79,7 +80,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     }
 
     override fun updateReplies(replies: List<TopicReply>) {
-        var topicRepliesList = replies.map { TopicRepliesItem(it)}
+        var topicRepliesList = replies.map { TopicRepliesItem(it) }
         mAdapter.setItems(topicRepliesList)
     }
 
@@ -107,7 +108,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                     var topicDetailHeadItem = topicDetailItem as TopicDetailHeadItem
                     (holder as TopicDetailHeadHolder).bind(topicDetailHeadItem.data)
                 }
-                1 ->{
+                1 -> {
                     var topicReplyItem = topicDetailItem as TopicRepliesItem
                     (holder as TopicReplyHolder).bind(topicReplyItem.data)
                 }
@@ -116,13 +117,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TopicDetailHodler? {
             var inflater: LayoutInflater = LayoutInflater.from(context)
-            when(viewType){
-                0 ->{
+            when (viewType) {
+                0 -> {
                     var binding = ListitemTopicDetailHeadBinding.inflate(inflater, parent, false)
                     return TopicDetailHeadHolder(binding)
                 }
-                1 ->{
-                    var binding = ListitemTopicReplyBinding.inflate(inflater,parent,false)
+                1 -> {
+                    var binding = ListitemTopicReplyBinding.inflate(inflater, parent, false)
                     return TopicReplyHolder(binding)
                 }
             }
@@ -154,8 +155,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         init {
             val css = Github()
             css.addRule("body", "padding: 0px")
+
             binding.markdownView.addStyleSheet(css)
-            binding.markdownView.setOnElementListener(object : MarkdownView.OnElementListener{
+            binding.markdownView.setOnElementListener(object : MarkdownView.OnElementListener {
                 override fun onLinkTap(p0: String?, p1: String?) {
                     Logly.d("onLinkTap")
                 }
@@ -186,7 +188,11 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
             })
         }
+
         fun bind(topicDetail: TopicDetail) {
+            binding.avatar.setOnClickListener {
+                Route.goUserDetail(activity,topicDetail.user.login)
+            }
             binding.setVariable(BR.topicDetail, topicDetail)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicDetail.user.avatarUrl, R.drawable.default_avatar)
@@ -195,14 +201,17 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         }
     }
 
-    inner class TopicReplyHolder(var binding:ListitemTopicReplyBinding):TopicDetailHodler(binding.root){
+    inner class TopicReplyHolder(var binding: ListitemTopicReplyBinding) : TopicDetailHodler(binding.root) {
 
-        fun bind(topicReply: TopicReply){
-            binding.setVariable(BR.topicReply,topicReply)
+        fun bind(topicReply: TopicReply) {
+            binding.setVariable(BR.topicReply, topicReply)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
-            binding.floorAt.text = getString(R.string.floor_at,adapterPosition)
-            binding.markdownView.linksClickable =true
+            binding.avatar.setOnClickListener {
+                Route.goUserDetail(activity,topicReply.user.login)
+            }
+            binding.floorAt.text = getString(R.string.floor_at, adapterPosition)
+            binding.markdownView.linksClickable = true
             binding.markdownView.movementMethod = LinkMovementMethod.getInstance()
             binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml))
             binding.root.setOnClickListener {
@@ -221,38 +230,38 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         }
     }
 
-    private fun addSpann(spanned: Spanned):Spanned{
+    private fun addSpann(spanned: Spanned): Spanned {
         val spanBuilder = SpannableStringBuilder(spanned)
-        val urlSpans = spanBuilder.getSpans(0,spanBuilder.length,URLSpan::class.java)
-        for(span in urlSpans){
+        val urlSpans = spanBuilder.getSpans(0, spanBuilder.length, URLSpan::class.java)
+        for (span in urlSpans) {
             val start = spanBuilder.getSpanStart(span)
             val end = spanBuilder.getSpanEnd(span)
             val flags = spanBuilder.getSpanFlags(span)
-            val clickableSpan : ClickableSpan =object : ClickableSpan() {
+            val clickableSpan: ClickableSpan = object : ClickableSpan() {
                 override fun onClick(p0: View?) {
                     Logly.d("  on click " + span.url)
                     route(span.url)
                 }
 
             }
-            spanBuilder.setSpan(clickableSpan,start,end,flags)
+            spanBuilder.setSpan(clickableSpan, start, end, flags)
             spanBuilder.removeSpan(span)
         }
         return spanBuilder
     }
 
-    private fun route(url:String){
-        if(url.startsWith("#reply")){
+    private fun route(url: String) {
+        if (url.startsWith("#reply")) {
             var floor = url.substring(6).toInt()
             topic_detail.smoothScrollToPosition(floor)
         }
-        if(url.startsWith("/")){
+        if (url.startsWith("/")) {
             var login = url.substring(1)
-            Route.goUserDetail(activity,login)
+            Route.goUserDetail(activity, login)
         }
-        if(url.startsWith("https://www.diycode.cc/topics/")){
+        if (url.startsWith("https://www.diycode.cc/topics/")) {
             var topicId = url.substring("https://www.diycode.cc/topics/".length).toInt()
-            Route.goTopicDetail(activity,topicId)
+            Route.goTopicDetail(activity, topicId)
         }
 
     }

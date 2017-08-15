@@ -17,7 +17,9 @@
 package com.zqlite.android.diycode.device.utils
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
 
@@ -37,4 +39,11 @@ object Route {
         intent.putExtra("topicId",topicId)
         activity.startActivity(intent)
     }
+
+    fun goLogin(activity: Activity){
+        val intent : Intent = Intent(activity,LoginActivity::class.java)
+        activity.startActivity(intent)
+    }
+
+
 }

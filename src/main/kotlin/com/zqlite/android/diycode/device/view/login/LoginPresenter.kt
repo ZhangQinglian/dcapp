@@ -14,20 +14,19 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.topicdetial
+package com.zqlite.android.diycode.device.view.login
 
 import com.zqlite.android.dclib.DiyCodeApi
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /**
- * Created by scott on 2017/8/13.
+ * Created by scott on 2017/8/15.
  */
-class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailContract.Presenter {
+class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
 
-
-    var mId : Int? = null
     init {
         mView.setPresenter(this)
     }
@@ -38,30 +37,16 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun stop() {
     }
 
-    override fun loadTopicDetail(id: Int) {
-        if(id != -1){
-            mId = id
-        }
-        DiyCodeApi.loadTopicDetail(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            mView.updateTopicDetail(it)
-            loadTopicReplies(mId!!)
-        }
-    }
+    override fun login(loginName: String, password: String) {
 
-    override fun loadTopicReplies(id: Int) {
-        DiyCodeApi.loadTopicReplies(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            mView.updateReplies(it)
-        }
-    }
-
-    override fun followTopic(topicId: Int) {
-        DiyCodeApi.followTopic(topicId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+        DiyCodeApi.login(loginName, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    Logly.d(it.toString())
+                    mView.updateToken(it)
                 },
                 {
-
                 }
         )
+
     }
+
 }

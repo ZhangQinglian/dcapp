@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2017 zhangqinglian
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+
+    <TextView
+        android:id="@+id/appname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:id="@+id/login_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        app:mtf_animationDuration="300"
+        app:mtf_cardCollapsedHeight="1dp"
+        app:mtf_image="@drawable/ic_login_user">
+
+        <EditText
+            android:id="@+id/login_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="用户名"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="#666"
+            android:textSize="15sp" />
+
+    </com.github.florent37.materialtextfield.MaterialTextField>
+
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:id="@+id/password"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_name"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        app:mtf_animationDuration="300"
+        app:mtf_cardCollapsedHeight="1dp"
+        app:mtf_image="@drawable/ic_login_password">
+
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="#666"
+            android:textSize="15sp" />
+
+    </com.github.florent37.materialtextfield.MaterialTextField>
+
+    <TextView
+        android:id="@+id/login"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:text="@string/login"
+        android:textColor="@color/colorPrimary"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:gravity="center"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:layout_below="@id/password"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
