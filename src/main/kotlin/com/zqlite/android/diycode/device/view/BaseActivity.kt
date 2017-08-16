@@ -44,4 +44,12 @@ abstract class BaseActivity : AppCompatActivity() {
     fun replaceFragment(fragment: BaseFragment,containerID:Int){
         supportFragmentManager.beginTransaction().replace(containerID,fragment).commit()
     }
+
+    fun hideFragment(fragment: BaseFragment){
+        supportFragmentManager.beginTransaction().hide(fragment).commit()
+    }
+
+    fun showFragment(fragment: BaseFragment){
+        supportFragmentManager.beginTransaction().show(fragment).commit()
+    }
 }

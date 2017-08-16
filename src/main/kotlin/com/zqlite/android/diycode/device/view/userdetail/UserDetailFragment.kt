@@ -29,6 +29,7 @@ import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemUserDetailHeadBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
+import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_user_detail.*
@@ -63,7 +64,9 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
 
     override fun updateUser(user: UserDetail) {
         mAdapter.addUserDetail(user)
-        mPresenter!!.getFollowing(TokenStore.getCurrentLogin(context))
+        if(!TokenStore.shouldLogin(context)){
+            mPresenter!!.getFollowing(TokenStore.getCurrentLogin(context))
+        }
     }
 
     override fun updateFollowing(followingUser: List<User>) {
@@ -107,6 +110,10 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         }
     }
     private fun follow(login: String,isFollow: Boolean){
+        if(TokenStore.shouldLogin(context)){
+            Route.goLogin(activity)
+            return
+        }
         if(isFollow){
             mPresenter!!.followUser(login)
         }else{
@@ -177,6 +184,7 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
     inner class UserDetailHeadHolder(var binding: ListitemUserDetailHeadBinding) : UserDetailItemHolder(binding.root) {
         fun bind(userDetail: UserDetail) {
             binding.setVariable(BR.userDetail,userDetail)
+            binding.follow.setOnClickListener { Route.goLogin(activity) }
             NetworkUtils.getInstace(context)!!.loadImage(binding.userAvatar,userDetail.avatarUrl,R.drawable.default_avatar)
         }
     }

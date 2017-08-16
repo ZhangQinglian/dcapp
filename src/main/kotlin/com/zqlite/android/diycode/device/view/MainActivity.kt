@@ -18,6 +18,7 @@ package com.zqlite.android.diycode.device.view
 
 import android.support.design.widget.BottomNavigationView
 import com.zqlite.android.diycode.R
+import com.zqlite.android.diycode.device.view.dashboard.DashboardFragment
 import com.zqlite.android.diycode.device.view.home.HomeContract
 import com.zqlite.android.diycode.device.view.home.HomeFragment
 import com.zqlite.android.diycode.device.view.home.HomePresenter
@@ -29,7 +30,7 @@ class MainActivity : BaseActivity() {
     private var mHomeFragment : HomeFragment ? = null
     private var mHomePresenter : HomeContract.Presenter? = null
 
-
+    private var mDashboradFramgnet : DashboardFragment? = null
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
@@ -37,10 +38,13 @@ class MainActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                replaceFragment(mHomeFragment!!,R.id.home_container)
+                showFragment(mHomeFragment!!)
+                hideFragment(mDashboradFramgnet!!)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
+                showFragment(mDashboradFramgnet!!)
+                hideFragment(mHomeFragment!!)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
@@ -59,9 +63,17 @@ class MainActivity : BaseActivity() {
         if(mHomeFragment == null){
             mHomeFragment = HomeFragment.getInstance(null)
             mHomePresenter = HomePresenter(mHomeFragment!!)
+            addFragment(mHomeFragment!!,R.id.home_container)
         }
-        addFragment(mHomeFragment!!,R.id.home_container)
 
+        //dashboard
+        if(mDashboradFramgnet == null){
+            mDashboradFramgnet = DashboardFragment.getInstance(null)
+            addFragment(mDashboradFramgnet!!,R.id.home_container)
+        }
+
+        showFragment(mHomeFragment!!)
+        hideFragment(mDashboradFramgnet!!)
         //init logly
         Logly.setGlobalTag(Logly.Tag(Logly.FLAG_THREAD_NAME,"scott",Logly.VERBOSE))
     }
