@@ -37,6 +37,7 @@ object TokenStore {
 
     val CREATE_AT = "createat_key"
 
+    val CURRENT_LOGIN = "current_login"
     fun saveToken(context: Context, token: Token) {
         val edit = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit()
         edit.putString(ACCESS_TOKEN_KEY,token.accessToken)
@@ -47,6 +48,13 @@ object TokenStore {
         edit.apply()
     }
 
+    fun saveCurrentLogin(context: Context,login:String){
+        context.getSharedPreferences(TOKEN,Context.MODE_PRIVATE).edit().putString(CURRENT_LOGIN,login).apply()
+    }
+
+    fun getCurrentLogin(context: Context):String{
+        return context.getSharedPreferences(TOKEN,Context.MODE_PRIVATE).getString(CURRENT_LOGIN,"")
+    }
     fun getAccessToken(context: Context) : String {
         return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
     }

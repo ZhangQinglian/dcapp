@@ -53,8 +53,9 @@ class LoginFragment : BaseFragment(),LoginContract.View {
     override fun initData() {
     }
 
-    override fun updateToken(token: Token) {
+    override fun updateToken(token: Token,login:String) {
         TokenStore.saveToken(context,token)
+        TokenStore.saveCurrentLogin(context,login)
         Toast.makeText(context,R.string.login_success,Toast.LENGTH_LONG).show()
         activity.finish()
     }

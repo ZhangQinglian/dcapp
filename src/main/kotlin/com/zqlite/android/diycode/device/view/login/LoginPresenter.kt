@@ -41,7 +41,7 @@ class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
 
         DiyCodeApi.login(loginName, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateToken(it)
+                    mView.updateToken(it,loginName)
                 },
                 {
                     mView.loginError()

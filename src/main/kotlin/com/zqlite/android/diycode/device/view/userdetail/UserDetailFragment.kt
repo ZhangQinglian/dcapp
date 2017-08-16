@@ -22,12 +22,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.zqlite.android.dclib.entiry.User
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemUserDetailHeadBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
-import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_user_detail.*
@@ -36,6 +37,8 @@ import kotlinx.android.synthetic.main.fragment_user_detail.*
  * Created by scott on 2017/8/14.
  */
 class UserDetailFragment : BaseFragment(), UserDetailContract.View {
+
+
 
     private var mPresenter: UserDetailContract.Presenter? = null
 
@@ -59,7 +62,56 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
     }
 
     override fun updateUser(user: UserDetail) {
-        mAdapter.updateUserDetail(user)
+        mAdapter.addUserDetail(user)
+        mPresenter!!.getFollowing(TokenStore.getCurrentLogin(context))
+    }
+
+    override fun updateFollowing(followingUser: List<User>) {
+        val userDetailData = mAdapter.getUserDetailData(0)
+        if(userDetailData.type == UserDetailData.TYPE_HEAD){
+            val userDetail : UserDetail = userDetailData.data as UserDetail
+            for (user in followingUser){
+                if(user.login == userDetail.login){
+                    updateFollowStatus(user.login,true,0)
+                    return
+                }
+            }
+            updateFollowStatus(userDetail.login,false,0)
+        }
+    }
+    override fun updateFollowStatus(login: String, isFollow: Boolean,change:Int) {
+        val view = user_detail_list.getChildAt(0)
+        val textview = view.findViewById<TextView>(R.id.follow)
+        if(isFollow){
+            textview.setText(R.string.followed)
+            updateFollowCount(change)
+        }else{
+            textview.setText(R.string.follow)
+            updateFollowCount(change)
+        }
+        textview.setOnClickListener {
+            follow(login,!isFollow)
+            textview.isClickable = false
+        }
+        textview.isClickable = true
+    }
+
+    private fun updateFollowCount(detal: Int){
+        val userDetailData = mAdapter.getUserDetailData(0)
+        if(userDetailData.type == UserDetailData.TYPE_HEAD){
+            val userDetail : UserDetail = userDetailData.data as UserDetail
+            userDetail.followersCount = userDetail.followersCount + detal
+            val view = user_detail_list.getChildAt(0)
+            val textView = view.findViewById<TextView>(R.id.followers)
+            textView.text = userDetail.getFollowCountDes()
+        }
+    }
+    private fun follow(login: String,isFollow: Boolean){
+        if(isFollow){
+            mPresenter!!.followUser(login)
+        }else{
+            mPresenter!!.unFollowUser(login)
+        }
     }
 
     companion object Factory {
@@ -93,10 +145,14 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
             return userDetails.size
         }
 
-        fun updateUserDetail(userDetail: UserDetail){
+        fun addUserDetail(userDetail: UserDetail){
             userDetails.clear()
             userDetails.add(UserDetailData(userDetail,UserDetailData.TYPE_HEAD))
             notifyDataSetChanged()
+        }
+
+        fun getUserDetailData(index:Int):UserDetailData{
+            return userDetails[index]
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): UserDetailItemHolder? {
@@ -122,11 +178,6 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         fun bind(userDetail: UserDetail) {
             binding.setVariable(BR.userDetail,userDetail)
             NetworkUtils.getInstace(context)!!.loadImage(binding.userAvatar,userDetail.avatarUrl,R.drawable.default_avatar)
-            binding.follow.setOnClickListener{
-                if(TokenStore.getAccessToken(context).isEmpty()){
-                    Route.goLogin(activity)
-                }
-            }
         }
     }
 

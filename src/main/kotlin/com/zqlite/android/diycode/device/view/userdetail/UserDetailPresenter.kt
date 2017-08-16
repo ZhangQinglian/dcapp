@@ -25,6 +25,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContract.Presenter {
 
+
     init {
         mView.setPresenter(this)
     }
@@ -38,5 +39,37 @@ class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContr
         DiyCodeApi.loadUserDetail(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
             mView.updateUser(it)
         }
+    }
+
+    override fun getFollowing(login: String) {
+        DiyCodeApi.getfollowing(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFollowing(it)
+                },
+                {}
+        )
+    }
+
+
+    override fun followUser(login: String) {
+        DiyCodeApi.followUser(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFollowStatus(login,true,1)
+                },
+                {
+
+                }
+        )
+    }
+
+    override fun unFollowUser(login: String) {
+        DiyCodeApi.unfollowUser(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFollowStatus(login,false,-1)
+                },
+                {
+
+                }
+        )
     }
 }
