@@ -19,6 +19,7 @@ package com.zqlite.android.diycode.device.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
@@ -45,5 +46,11 @@ object Route {
         activity.startActivity(intent)
     }
 
+    fun openBrowser(activity: Activity,urlStr :String){
+        val intent : Intent = Intent(Intent.ACTION_VIEW)
+        val uri = Uri.parse(urlStr)
+        intent.setData(uri)
+        activity.startActivity(intent)
+    }
 
 }

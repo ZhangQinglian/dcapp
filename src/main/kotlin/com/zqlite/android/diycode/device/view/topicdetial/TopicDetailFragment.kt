@@ -16,6 +16,8 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -43,6 +45,7 @@ import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.diycode.device.view.custom.URLImageParser
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
 
@@ -330,7 +333,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.floorAt.text = getString(R.string.floor_at, adapterPosition)
             binding.markdownView.linksClickable = true
             binding.markdownView.movementMethod = LinkMovementMethod.getInstance()
-            binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml))
+            binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml,URLImageParser(binding.markdownView,context),null))
             binding.root.setOnClickListener {
                 Logly.d("touch")
             }
@@ -369,17 +372,22 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     private fun route(url: String) {
         if (url.startsWith("#reply")) {
-            var floor = url.substring(6).toInt()
+            val floor = url.substring(6).toInt()
             topic_detail.smoothScrollToPosition(floor)
+            return
         }
         if (url.startsWith("/")) {
-            var login = url.substring(1)
+            val login = url.substring(1)
             Route.goUserDetail(activity, login)
+            return
         }
         if (url.startsWith("https://www.diycode.cc/topics/")) {
-            var topicId = url.substring("https://www.diycode.cc/topics/".length).toInt()
+            val topicId = url.substring("https://www.diycode.cc/topics/".length).toInt()
             Route.goTopicDetail(activity, topicId)
+            return
         }
+        Route.openBrowser(activity,url)
 
     }
+
 }
