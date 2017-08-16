@@ -133,6 +133,8 @@
             android:textStyle="bold"
             android:textSize="14sp" />
 
+
+
         <TextView
             android:layout_below="@id/line1"
             android:layout_toRightOf="@id/like_count"
@@ -143,5 +145,52 @@
             android:text="@string/topic_likes"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp" />
+        <TextView
+            android:id="@+id/topic_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{topicDetail.getReplyCount}"
+            android:layout_alignBottom="@id/replied_at"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/line1"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/topic_comment_count"
+            android:layout_alignBottom="@id/topic_comment_count"
+            android:src="@drawable/ic_topic_comments" />
+
+        <ImageView
+            android:id="@+id/follow"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/hitTimes"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"/>
+
+
+        <ImageView
+            android:id="@+id/favorite"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/hitTimes"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+        <ImageView
+            android:id="@+id/like"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/hitTimes"
+            android:layout_alignLeft="@id/like_count"
+            android:layout_marginTop="10dp"/>
+
     </RelativeLayout>
 </layout>

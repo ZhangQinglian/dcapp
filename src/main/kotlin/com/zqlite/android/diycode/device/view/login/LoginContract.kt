@@ -31,5 +31,6 @@ interface LoginContract {
 
     interface View :IView<LoginContract.Presenter>{
         fun updateToken(token:Token)
+        fun loginError()
     }
 }

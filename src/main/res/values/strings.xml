@@ -3,12 +3,23 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="topic_detail">主题</string>
+    <string name="topic_detail">话题</string>
     <string name="user_detail">个人中心</string>
     <string name="topic_hits">阅读</string>
     <string name="topic_likes">喜欢</string>
     <string name="follow">关注</string>
     <string name="login">登陆</string>
-
+    <string name="login_success">登录成功</string>
+    <string name="login_error">用户信息认证失败</string>
     <string name="floor_at">#%1$d楼</string>
+
+    <string name="like_success">已赞</string>
+    <string name="unlike_success">已取消赞</string>
+
+    <string name="follow_success">已关注</string>
+    <string name="unfollow_success">已取消关注</string>
+
+    <string name="favorite_success">已收藏</string>
+    <string name="unfavorite_success">已取消收藏</string>
+
 </resources>

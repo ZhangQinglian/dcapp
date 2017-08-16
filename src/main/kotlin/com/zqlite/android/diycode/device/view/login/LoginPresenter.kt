@@ -44,6 +44,7 @@ class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
                     mView.updateToken(it)
                 },
                 {
+                    mView.loginError()
                 }
         )
 

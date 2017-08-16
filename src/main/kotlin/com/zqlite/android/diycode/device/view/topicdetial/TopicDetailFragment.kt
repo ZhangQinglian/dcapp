@@ -28,6 +28,9 @@ import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.zqlite.android.dclib.entiry.TopicDetail
@@ -82,6 +85,77 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateReplies(replies: List<TopicReply>) {
         var topicRepliesList = replies.map { TopicRepliesItem(it) }
         mAdapter.setItems(topicRepliesList)
+    }
+
+    override fun updateLikeStatus(topicId: Int, isLike: Boolean) {
+        val head = topic_detail.getChildAt(0)
+        val likeImage = head.findViewById<ImageView>(R.id.like)
+
+        if(isLike){
+            Toast.makeText(context,R.string.like_success,Toast.LENGTH_SHORT).show()
+            likeImage.setImageResource(R.drawable.ic_topic_like_ok)
+        }else{
+            Toast.makeText(context,R.string.unlike_success,Toast.LENGTH_SHORT).show()
+            likeImage.setImageResource(R.drawable.ic_like_normal)
+        }
+        val likeCount = head.findViewById<TextView>(R.id.like_count)
+        val like = likeCount.text.toString().toInt()
+        if(isLike){
+            likeCount.text = (like + 1).toString()
+        }else{
+            likeCount.text = (like -1 ).toString()
+        }
+        likeImage.setOnClickListener {
+            if(isLike){
+                mPresenter!!.unlikeTopic(topicId)
+            }else{
+                mPresenter!!.likeTopic(topicId)
+            }
+            likeImage.isClickable = false
+        }
+        likeImage.isClickable = true
+    }
+
+    override fun updateFollowStatus(topicId: Int, isFollow: Boolean) {
+        val head = topic_detail.getChildAt(0)
+        val followImage = head.findViewById<ImageView>(R.id.follow)
+        if(isFollow){
+            Toast.makeText(context,R.string.follow_success,Toast.LENGTH_SHORT).show()
+            followImage.setImageResource(R.drawable.ic_topic_follow_ok)
+        }else{
+            Toast.makeText(context,R.string.unfollow_success,Toast.LENGTH_SHORT).show()
+            followImage.setImageResource(R.drawable.ic_topic_follow_normal)
+        }
+        followImage.setOnClickListener {
+            if(isFollow){
+                mPresenter!!.unFollowTopic(topicId)
+            }else{
+                mPresenter!!.followTopic(topicId)
+            }
+            followImage.isClickable = false
+        }
+        followImage.isClickable = true
+    }
+
+    override fun updateFavoriteStatus(topicId: Int, isFavorite: Boolean) {
+        val head = topic_detail.getChildAt(0)
+        val favoriteImage = head.findViewById<ImageView>(R.id.favorite)
+        if(isFavorite){
+            Toast.makeText(context,R.string.favorite_success,Toast.LENGTH_SHORT).show()
+            favoriteImage.setImageResource(R.drawable.ic_topic_favorite_ok)
+        }else{
+            Toast.makeText(context,R.string.unfavorite_success,Toast.LENGTH_SHORT).show()
+            favoriteImage.setImageResource(R.drawable.ic_topic_favorite_normal)
+        }
+        favoriteImage.setOnClickListener {
+            if(isFavorite){
+                mPresenter!!.unFavoriteTopic(topicId)
+            }else{
+                mPresenter!!.favoriteTopic(topicId)
+            }
+            favoriteImage.isClickable = false
+        }
+        favoriteImage.isClickable = true
     }
 
     inner class TopicDetailAdapter : RecyclerView.Adapter<TopicDetailHodler>() {
@@ -193,8 +267,51 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.avatar.setOnClickListener {
                 Route.goUserDetail(activity,topicDetail.user.login)
             }
+            if(topicDetail.liked){
+                binding.like.setImageResource(R.drawable.ic_topic_like_ok)
+                binding.like.setOnClickListener {
+                    mPresenter!!.unlikeTopic(topicDetail.id)
+                    binding.like.isClickable = false
+                }
+            }else{
+                binding.like.setImageResource(R.drawable.ic_like_normal)
+                binding.like.setOnClickListener {
+                    mPresenter!!.likeTopic(topicDetail.id)
+                    binding.like.isClickable = false
+                }
+            }
+
+            if(topicDetail.followed){
+                binding.follow.setImageResource(R.drawable.ic_topic_follow_ok)
+                binding.follow.setOnClickListener {
+                    mPresenter!!.unFollowTopic(topicDetail.id)
+                    binding.follow.isClickable = false
+                }
+            }else{
+                binding.follow.setImageResource(R.drawable.ic_topic_follow_normal)
+                binding.follow.setOnClickListener {
+                    mPresenter!!.followTopic(topicDetail.id)
+                    binding.follow.isClickable = false
+                }
+            }
+
+            if(topicDetail.favorited){
+                binding.favorite.setImageResource(R.drawable.ic_topic_favorite_ok)
+                binding.favorite.setOnClickListener {
+                    binding.favorite.isClickable = false
+                    mPresenter!!.unFavoriteTopic(topicDetail.id)
+                }
+            }else{
+                binding.favorite.setImageResource(R.drawable.ic_topic_favorite_normal)
+                binding.favorite.setOnClickListener {
+                    binding.favorite.isClickable = false
+                    mPresenter!!.favoriteTopic(topicDetail.id)
+                }
+            }
+
             binding.setVariable(BR.topicDetail, topicDetail)
             binding.executePendingBindings()
+
             NetworkUtils.instance!!.loadImage(binding.avatar, topicDetail.user.avatarUrl, R.drawable.default_avatar)
             binding.markdownView.loadMarkdown(topicDetail.getContentWithTitle())
 

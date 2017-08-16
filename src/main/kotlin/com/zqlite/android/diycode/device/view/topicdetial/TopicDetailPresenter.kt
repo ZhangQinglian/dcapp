@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view.topicdetial
 
 import com.zqlite.android.dclib.DiyCodeApi
+import com.zqlite.android.dclib.sevice.DiyCodeContract
 import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -27,7 +28,9 @@ import io.reactivex.schedulers.Schedulers
 class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailContract.Presenter {
 
 
-    var mId : Int? = null
+
+    var mId: Int? = null
+
     init {
         mView.setPresenter(this)
     }
@@ -39,7 +42,7 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     }
 
     override fun loadTopicDetail(id: Int) {
-        if(id != -1){
+        if (id != -1) {
             mId = id
         }
         DiyCodeApi.loadTopicDetail(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
@@ -57,11 +60,61 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun followTopic(topicId: Int) {
         DiyCodeApi.followTopic(topicId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    Logly.d(it.toString())
+                    mView.updateFollowStatus(topicId, true)
+                },
+                {
+
+
+                }
+        )
+    }
+
+    override fun unFollowTopic(topicId: Int) {
+        DiyCodeApi.unfollowTopic(topicId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFollowStatus(topicId, false)
                 },
                 {
 
                 }
+        )
+    }
+
+
+    override fun likeTopic(id: Int) {
+        DiyCodeApi.like(id, type = DiyCodeContract.LikeType.TYPE_TOPIC).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateLikeStatus(id, true)
+                },
+                {}
+        )
+    }
+
+
+    override fun unlikeTopic(id: Int) {
+        DiyCodeApi.unlike(id, type = DiyCodeContract.LikeType.TYPE_TOPIC).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateLikeStatus(id, false)
+                },
+                {}
+        )
+    }
+
+    override fun favoriteTopic(id: Int) {
+        DiyCodeApi.favoriteTopic(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFavoriteStatus(id, true)
+                },
+                {}
+        )
+    }
+
+    override fun unFavoriteTopic(id: Int) {
+        DiyCodeApi.unFavoriteTopic(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateFavoriteStatus(id, false)
+                },
+                {}
         )
     }
 }

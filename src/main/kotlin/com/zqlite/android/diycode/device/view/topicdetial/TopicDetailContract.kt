@@ -30,10 +30,18 @@ interface TopicDetailContract {
         fun loadTopicDetail(id:Int)
         fun loadTopicReplies(id:Int)
         fun followTopic(topicId:Int)
+        fun unFollowTopic(topicId:Int)
+        fun likeTopic(id:Int)
+        fun unlikeTopic(id:Int)
+        fun favoriteTopic(id:Int)
+        fun unFavoriteTopic(id:Int)
     }
 
     interface View : IView<Presenter>{
         fun updateTopicDetail(topicDetal : TopicDetail)
         fun updateReplies(replies : List<TopicReply>)
+        fun updateLikeStatus(topicId:Int,isLike: Boolean)
+        fun updateFollowStatus(topicId:Int,isFollow: Boolean)
+        fun updateFavoriteStatus(topicId: Int,isFavorite:Boolean)
     }
 }
