@@ -16,11 +16,13 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -28,9 +30,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.URLSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -56,9 +60,12 @@ import kotlinx.android.synthetic.main.fragment_topic_detail.*
 class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
 
+
     private var mPresenter: TopicDetailContract.Presenter? = null
 
     private val mAdapter: TopicDetailAdapter = TopicDetailAdapter()
+
+    private var bsb : BottomSheetBehavior<NestedScrollView>? = null
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -75,6 +82,42 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
         fresh_layout.setOnRefreshListener {
             mPresenter!!.loadTopicDetail(-1)
+        }
+
+        bsb = BottomSheetBehavior.from(reply_box)
+        bsb!!.peekHeight = 0
+        bsb!!.isHideable = true
+        bsb!!.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Logly.d(" new state " + newState)
+                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                    fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).start()
+                    fab_reply.isClickable = true
+                }
+            }
+
+        })
+        fab_reply.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
+            bsb!!.state = BottomSheetBehavior.STATE_EXPANDED
+            fab_reply.isClickable = false
+            fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).start()
+        }
+
+        reply_commit.setOnClickListener {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(activity.window.decorView.windowToken,0)
+            val content = reply_edit.text.toString()
+            if(content.isNotEmpty()){
+                val topic = getCurrentTopic()
+                mPresenter!!.reply(topic.id,content)
+            }
         }
     }
 
@@ -162,6 +205,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         favoriteImage.isClickable = true
     }
 
+    override fun updateReplySuccess() {
+        reply_edit.setText("")
+        bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        fresh_layout.isRefreshing = true
+        Toast.makeText(context,R.string.reply_success,Toast.LENGTH_SHORT).show()
+        mPresenter!!.loadTopicDetail(-1)
+    }
     inner class TopicDetailAdapter : RecyclerView.Adapter<TopicDetailHodler>() {
 
         private var itemList: MutableList<TopicDetailItem> = mutableListOf()
@@ -178,6 +228,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             notifyDataSetChanged()
         }
 
+        fun getItemAt(index :Int):TopicDetailItem{
+            return itemList[index]
+        }
         override fun onBindViewHolder(holder: TopicDetailHodler?, position: Int) {
             var topicDetailItem = itemList[position]
             var type = getItemViewType(position)
@@ -406,4 +459,18 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     }
 
+    fun onBackPressed() : Boolean{
+        if(bsb!!.state == BottomSheetBehavior.STATE_EXPANDED){
+            bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
+            return true
+        }
+        return false
+    }
+
+    private fun getCurrentTopic():TopicDetail{
+        val topicDetailHeadItem =  mAdapter.getItemAt(0) as TopicDetailHeadItem
+        val data = topicDetailHeadItem.data as TopicDetail
+        return data
+
+    }
 }

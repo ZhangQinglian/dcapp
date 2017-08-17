@@ -167,7 +167,7 @@
             android:src="@drawable/ic_topic_comments" />
 
         <ImageView
-            android:id="@+id/follow"
+            android:id="@+id/favorite"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_below="@id/hitTimes"
@@ -177,7 +177,7 @@
 
 
         <ImageView
-            android:id="@+id/favorite"
+            android:id="@+id/follow"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_below="@id/hitTimes"

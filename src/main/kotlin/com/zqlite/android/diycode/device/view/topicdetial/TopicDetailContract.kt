@@ -35,6 +35,7 @@ interface TopicDetailContract {
         fun unlikeTopic(id:Int)
         fun favoriteTopic(id:Int)
         fun unFavoriteTopic(id:Int)
+        fun reply(id: Int,content:String)
     }
 
     interface View : IView<Presenter>{
@@ -43,5 +44,6 @@ interface TopicDetailContract {
         fun updateLikeStatus(topicId:Int,isLike: Boolean)
         fun updateFollowStatus(topicId:Int,isFollow: Boolean)
         fun updateFavoriteStatus(topicId: Int,isFavorite:Boolean)
+        fun updateReplySuccess()
     }
 }

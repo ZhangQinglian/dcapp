@@ -57,4 +57,11 @@ class TopicDetailActivity : BaseActivity() {
             mPresetner!!.loadTopicDetail(id)
         }
     }
+
+    override fun onBackPressed() {
+        if(mTopicDetailFragment!!.onBackPressed()){
+            return
+        }
+        super.onBackPressed()
+    }
 }

@@ -66,12 +66,13 @@ class URLImageParser(internal var container: View, internal var c: Context) : Im
 
     inner class ImageGetterAsyncTask(internal var urlDrawable: URLDrawable) : AsyncTask<String, Void, Drawable>() {
 
-        override fun doInBackground(vararg params: String): Drawable {
+        override fun doInBackground(vararg params: String): Drawable? {
             val source = params[0]
-            return fetchDrawable(source)!!
+            return fetchDrawable(source)
         }
 
-        override fun onPostExecute(result: Drawable) {
+        override fun onPostExecute(result: Drawable?) {
+            if(result == null) return
             // set the correct bound according to the result from HTTP call
             urlDrawable.setBounds(0, 0, 0 + result.intrinsicWidth, 0 + result.intrinsicHeight)
 

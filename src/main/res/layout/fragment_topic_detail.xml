@@ -14,17 +14,109 @@
   ~    limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/topic_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-</FrameLayout>
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/reply_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:clipToPadding="true"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/shadow"
+                android:rotation="180"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/local_user_avatar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="20dp"
+                android:src="@drawable/default_avatar" />
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/reply_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/local_user_avatar"
+                android:layout_marginBottom="30dp"
+                android:background="@null"
+                android:hint="发表评论"
+                android:maxHeight="300dp" />
+
+            <ImageView
+                android:id="@+id/reply_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/reply_edit"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/ic_reply_image"
+                android:padding="3dp"/>
+
+            <ImageView
+                android:id="@+id/reply_url"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@id/reply_edit"
+                android:layout_toRightOf="@id/reply_image"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/ic_reply_url"
+                android:padding="3dp"/>
+            <TextView
+                android:id="@+id/reply_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/reply_url"
+                android:text="发表"
+                android:layout_marginRight="20dp"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:background="@color/colorPrimary"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless" />
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_reply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_message"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_anchor="@id/topic_detail"
+        app:layout_anchorGravity="bottom|right" />
+
+</android.support.design.widget.CoordinatorLayout>

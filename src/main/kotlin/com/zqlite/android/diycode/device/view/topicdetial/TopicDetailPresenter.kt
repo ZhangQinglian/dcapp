@@ -117,4 +117,12 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
                 {}
         )
     }
+
+    override fun reply(id: Int, content: String) {
+        DiyCodeApi.replyTopic(id,content).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.updateReplySuccess()
+                },{}
+        )
+    }
 }

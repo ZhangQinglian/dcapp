@@ -25,4 +25,6 @@
     <string name="favorite_success">已收藏</string>
     <string name="unfavorite_success">已取消收藏</string>
 
+    <string name="reply_success">回复成功</string>
+
 </resources>
