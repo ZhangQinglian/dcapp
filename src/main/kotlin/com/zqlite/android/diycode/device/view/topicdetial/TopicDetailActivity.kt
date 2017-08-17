@@ -16,9 +16,11 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
+import android.content.Intent
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.BaseActivity
 import com.zqlite.android.diycode.device.view.custom.DecorViewProxy
+import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.activity_topic_detail.*
 
 /**
@@ -64,4 +66,5 @@ class TopicDetailActivity : BaseActivity() {
         }
         super.onBackPressed()
     }
+
 }

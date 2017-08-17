@@ -62,6 +62,7 @@
                 android:layout_toRightOf="@id/local_user_avatar"
                 android:layout_marginBottom="30dp"
                 android:background="@null"
+                android:textSize="13sp"
                 android:hint="发表评论"
                 android:maxHeight="300dp" />
 
@@ -114,7 +115,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_message"
+        android:src="@drawable/ic_reply_message"
         app:backgroundTint="@color/colorPrimary"
         app:layout_anchor="@id/topic_detail"
         app:layout_anchorGravity="bottom|right" />

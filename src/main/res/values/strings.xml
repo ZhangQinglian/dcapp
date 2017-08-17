@@ -27,4 +27,11 @@
 
     <string name="reply_success">回复成功</string>
 
+    <string name="url_des">输入链接描述</string>
+    <string name="url_content">输入链接</string>
+    <string name="url_title">链接</string>
+
+    <string name="comm_ok">确认</string>
+    <string name="comm_cancel">取消</string>
+
 </resources>

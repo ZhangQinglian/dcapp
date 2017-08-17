@@ -16,11 +16,15 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.zqlite.android.dclib.DiyCodeApi
 import com.zqlite.android.dclib.sevice.DiyCodeContract
 import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
+import java.io.File
 
 /**
  * Created by scott on 2017/8/13.
@@ -123,6 +127,24 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
                 {
                     mView.updateReplySuccess()
                 },{}
+        )
+    }
+
+    override fun uploadImage(file: File) {
+        DiyCodeApi.uploadPhoto(file).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    val jsonObject = JSONObject(it.string())
+                    val url = jsonObject.optString("image_url","")
+                    if(url.isNotEmpty()){
+                        mView.uploadSuccess(url)
+                    }else{
+                        mView.uploadError()
+                    }
+
+                },
+                {
+                    mView.uploadError()
+                }
         )
     }
 }

@@ -17,9 +17,9 @@
 package com.zqlite.android.diycode.device.utils
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.support.v4.app.Fragment
 import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
 import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
@@ -29,6 +29,8 @@ import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
  * Created by scott on 2017/8/14.
  */
 object Route {
+
+    val PICK_IMAGE_REQUEST_CODE = 100
 
     fun goUserDetail(activity:Activity,loginName:String){
         val intent : Intent = Intent(activity,UserDetailActivity::class.java)
@@ -58,5 +60,11 @@ object Route {
         val intent : Intent = Intent(activity,ImageViewerActivity::class.java)
         intent.putExtra("url",urlStr)
         activity.startActivity(intent)
+    }
+
+    fun pickImage(fragment: Fragment){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        fragment.startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
     }
 }

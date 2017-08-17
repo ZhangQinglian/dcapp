@@ -20,6 +20,7 @@ import com.zqlite.android.dclib.entiry.TopicDetail
 import com.zqlite.android.dclib.entiry.TopicReply
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
+import java.io.File
 
 /**
  * Created by scott on 2017/8/13.
@@ -36,6 +37,7 @@ interface TopicDetailContract {
         fun favoriteTopic(id:Int)
         fun unFavoriteTopic(id:Int)
         fun reply(id: Int,content:String)
+        fun uploadImage(file: File)
     }
 
     interface View : IView<Presenter>{
@@ -45,5 +47,7 @@ interface TopicDetailContract {
         fun updateFollowStatus(topicId:Int,isFollow: Boolean)
         fun updateFavoriteStatus(topicId: Int,isFavorite:Boolean)
         fun updateReplySuccess()
+        fun uploadSuccess(url:String)
+        fun uploadError()
     }
 }

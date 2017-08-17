@@ -16,13 +16,18 @@
 
 package com.zqlite.android.diycode.device.view.topicdetial
 
+import android.Manifest
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.Editable
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -30,29 +35,31 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.URLSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.zqlite.android.dclib.entiry.TopicDetail
 import com.zqlite.android.dclib.entiry.TopicReply
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicDetailHeadBinding
 import com.zqlite.android.diycode.databinding.ListitemTopicReplyBinding
-import com.zqlite.android.diycode.device.utils.NetworkUtils
-import com.zqlite.android.diycode.device.utils.Route
-import com.zqlite.android.diycode.device.utils.TokenStore
+import com.zqlite.android.diycode.device.utils.*
 import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.diycode.device.view.custom.URLImageParser
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
+import java.io.File
 
 /**
  * Created by scott on 2017/8/13.
@@ -60,12 +67,11 @@ import kotlinx.android.synthetic.main.fragment_topic_detail.*
 class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
 
-
     private var mPresenter: TopicDetailContract.Presenter? = null
 
     private val mAdapter: TopicDetailAdapter = TopicDetailAdapter()
 
-    private var bsb : BottomSheetBehavior<NestedScrollView>? = null
+    private var bsb: BottomSheetBehavior<NestedScrollView>? = null
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -87,13 +93,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         bsb = BottomSheetBehavior.from(reply_box)
         bsb!!.peekHeight = 0
         bsb!!.isHideable = true
-        bsb!!.setBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback(){
+        bsb!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Logly.d(" new state " + newState)
-                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).start()
                     fab_reply.isClickable = true
                 }
@@ -101,7 +107,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         })
         fab_reply.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
                 return@setOnClickListener
             }
@@ -112,13 +118,67 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         reply_commit.setOnClickListener {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(activity.window.decorView.windowToken,0)
+            imm.hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
             val content = reply_edit.text.toString()
-            if(content.isNotEmpty()){
+            if (content.isNotEmpty()) {
                 val topic = getCurrentTopic()
-                mPresenter!!.reply(topic.id,content)
+                mPresenter!!.reply(topic.id, content)
             }
         }
+
+        reply_image.setOnClickListener {
+            Dexter.withActivity(activity).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE).withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                    Route.pickImage(this@TopicDetailFragment as Fragment)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
+                }
+
+                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                }
+
+            }).check()
+
+        }
+
+        reply_url.setOnClickListener {
+            val builder = AlertDialog.Builder(context)
+            val linearLayout = LinearLayout(context)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            val linearLayoutP = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            linearLayout.layoutParams = linearLayoutP
+
+            val editTextDes = EditText(context)
+            val editP1 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            editTextDes.layoutParams = editP1
+            editTextDes.setHint(R.string.url_des)
+
+            val editTextUrl = EditText(context)
+            val editP2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            editTextUrl.layoutParams = editP2
+            editTextUrl.setHint(R.string.url_content)
+
+            linearLayout.addView(editTextDes)
+            linearLayout.addView(editTextUrl)
+
+            builder.setView(linearLayout).setTitle(R.string.url_title).setPositiveButton(R.string.comm_ok,object:DialogInterface.OnClickListener{
+                override fun onClick(p0: DialogInterface?, p1: Int) {
+                    val des = editTextDes.text.toString()
+                    val url = editTextUrl.text.toString()
+                    reply_edit.append(MarkdownUtils.getUrlMark(url,des))
+                    p0?.dismiss()
+                }
+
+            }).setNegativeButton(R.string.comm_cancel,object :DialogInterface.OnClickListener{
+                override fun onClick(p0: DialogInterface?, p1: Int) {
+                    p0?.dismiss()
+                }
+
+            }).show()
+
+        }
+
     }
 
     override fun initData() {
@@ -138,24 +198,24 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         val head = topic_detail.getChildAt(0)
         val likeImage = head.findViewById<ImageView>(R.id.like)
 
-        if(isLike){
-            Toast.makeText(context,R.string.like_success,Toast.LENGTH_SHORT).show()
+        if (isLike) {
+            Toast.makeText(context, R.string.like_success, Toast.LENGTH_SHORT).show()
             likeImage.setImageResource(R.drawable.ic_topic_like_ok)
-        }else{
-            Toast.makeText(context,R.string.unlike_success,Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, R.string.unlike_success, Toast.LENGTH_SHORT).show()
             likeImage.setImageResource(R.drawable.ic_like_normal)
         }
         val likeCount = head.findViewById<TextView>(R.id.like_count)
         val like = likeCount.text.toString().toInt()
-        if(isLike){
+        if (isLike) {
             likeCount.text = (like + 1).toString()
-        }else{
-            likeCount.text = (like -1 ).toString()
+        } else {
+            likeCount.text = (like - 1).toString()
         }
         likeImage.setOnClickListener {
-            if(isLike){
+            if (isLike) {
                 mPresenter!!.unlikeTopic(topicId)
-            }else{
+            } else {
                 mPresenter!!.likeTopic(topicId)
             }
             likeImage.isClickable = false
@@ -166,17 +226,17 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateFollowStatus(topicId: Int, isFollow: Boolean) {
         val head = topic_detail.getChildAt(0)
         val followImage = head.findViewById<ImageView>(R.id.follow)
-        if(isFollow){
-            Toast.makeText(context,R.string.follow_success,Toast.LENGTH_SHORT).show()
+        if (isFollow) {
+            Toast.makeText(context, R.string.follow_success, Toast.LENGTH_SHORT).show()
             followImage.setImageResource(R.drawable.ic_topic_follow_ok)
-        }else{
-            Toast.makeText(context,R.string.unfollow_success,Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, R.string.unfollow_success, Toast.LENGTH_SHORT).show()
             followImage.setImageResource(R.drawable.ic_topic_follow_normal)
         }
         followImage.setOnClickListener {
-            if(isFollow){
+            if (isFollow) {
                 mPresenter!!.unFollowTopic(topicId)
-            }else{
+            } else {
                 mPresenter!!.followTopic(topicId)
             }
             followImage.isClickable = false
@@ -187,17 +247,17 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateFavoriteStatus(topicId: Int, isFavorite: Boolean) {
         val head = topic_detail.getChildAt(0)
         val favoriteImage = head.findViewById<ImageView>(R.id.favorite)
-        if(isFavorite){
-            Toast.makeText(context,R.string.favorite_success,Toast.LENGTH_SHORT).show()
+        if (isFavorite) {
+            Toast.makeText(context, R.string.favorite_success, Toast.LENGTH_SHORT).show()
             favoriteImage.setImageResource(R.drawable.ic_topic_favorite_ok)
-        }else{
-            Toast.makeText(context,R.string.unfavorite_success,Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, R.string.unfavorite_success, Toast.LENGTH_SHORT).show()
             favoriteImage.setImageResource(R.drawable.ic_topic_favorite_normal)
         }
         favoriteImage.setOnClickListener {
-            if(isFavorite){
+            if (isFavorite) {
                 mPresenter!!.unFavoriteTopic(topicId)
-            }else{
+            } else {
                 mPresenter!!.favoriteTopic(topicId)
             }
             favoriteImage.isClickable = false
@@ -209,9 +269,34 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         reply_edit.setText("")
         bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
         fresh_layout.isRefreshing = true
-        Toast.makeText(context,R.string.reply_success,Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.reply_success, Toast.LENGTH_SHORT).show()
         mPresenter!!.loadTopicDetail(-1)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Logly.d(data.toString())
+        if (data != null) {
+            val clipData = data.clipData
+            val urlData = clipData.getItemAt(0)
+            if (urlData.uri != null) {
+                val path = FileUtils.getFilePathByUri(context, urlData.uri)
+                val file = File(path)
+                mPresenter!!.uploadImage(file)
+            }
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun uploadSuccess(url: String) {
+        reply_edit.append(MarkdownUtils.getImageUrlMark(url, "reply_image"))
+    }
+
+    override fun uploadError() {
+    }
+
+
     inner class TopicDetailAdapter : RecyclerView.Adapter<TopicDetailHodler>() {
 
         private var itemList: MutableList<TopicDetailItem> = mutableListOf()
@@ -228,9 +313,10 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             notifyDataSetChanged()
         }
 
-        fun getItemAt(index :Int):TopicDetailItem{
+        fun getItemAt(index: Int): TopicDetailItem {
             return itemList[index]
         }
+
         override fun onBindViewHolder(holder: TopicDetailHodler?, position: Int) {
             var topicDetailItem = itemList[position]
             var type = getItemViewType(position)
@@ -310,7 +396,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 }
 
                 override fun onImageTap(p0: String?, p1: Int, p2: Int) {
-                    Route.openImageView(activity,p0!!)
+                    Route.openImageView(activity, p0!!)
                 }
 
                 override fun onKeystrokeTap(p0: String?) {
@@ -322,15 +408,15 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         fun bind(topicDetail: TopicDetail) {
             binding.avatar.setOnClickListener {
-                Route.goUserDetail(activity,topicDetail.user.login)
+                Route.goUserDetail(activity, topicDetail.user.login)
             }
-            if(topicDetail.liked){
+            if (topicDetail.liked) {
                 binding.like.setImageResource(R.drawable.ic_topic_like_ok)
                 binding.like.setOnClickListener {
                     mPresenter!!.unlikeTopic(topicDetail.id)
                     binding.like.isClickable = false
                 }
-            }else{
+            } else {
                 binding.like.setImageResource(R.drawable.ic_like_normal)
                 binding.like.setOnClickListener {
                     mPresenter!!.likeTopic(topicDetail.id)
@@ -338,13 +424,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 }
             }
 
-            if(topicDetail.followed){
+            if (topicDetail.followed) {
                 binding.follow.setImageResource(R.drawable.ic_topic_follow_ok)
                 binding.follow.setOnClickListener {
                     mPresenter!!.unFollowTopic(topicDetail.id)
                     binding.follow.isClickable = false
                 }
-            }else{
+            } else {
                 binding.follow.setImageResource(R.drawable.ic_topic_follow_normal)
                 binding.follow.setOnClickListener {
                     mPresenter!!.followTopic(topicDetail.id)
@@ -352,13 +438,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 }
             }
 
-            if(topicDetail.favorited){
+            if (topicDetail.favorited) {
                 binding.favorite.setImageResource(R.drawable.ic_topic_favorite_ok)
                 binding.favorite.setOnClickListener {
                     binding.favorite.isClickable = false
                     mPresenter!!.unFavoriteTopic(topicDetail.id)
                 }
-            }else{
+            } else {
                 binding.favorite.setImageResource(R.drawable.ic_topic_favorite_normal)
                 binding.favorite.setOnClickListener {
                     binding.favorite.isClickable = false
@@ -378,19 +464,19 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     inner class TopicReplyHolder(var binding: ListitemTopicReplyBinding) : TopicDetailHodler(binding.root) {
 
         fun bind(topicReply: TopicReply) {
-            if(topicReply.deleted){
+            if (topicReply.deleted) {
                 topicReply.bodyHtml = "<s><font color=\"#FF0000\">此楼已删除</font></s>"
             }
             binding.setVariable(BR.topicReply, topicReply)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
             binding.avatar.setOnClickListener {
-                Route.goUserDetail(activity,topicReply.user.login)
+                Route.goUserDetail(activity, topicReply.user.login)
             }
             binding.floorAt.text = getString(R.string.floor_at, adapterPosition)
             binding.markdownView.linksClickable = true
             binding.markdownView.movementMethod = LinkMovementMethod.getInstance()
-            binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml,URLImageParser(binding.markdownView,context),null))
+            binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml, URLImageParser(binding.markdownView, context), null))
             binding.root.setOnClickListener {
                 Logly.d("touch")
             }
@@ -425,16 +511,16 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             spanBuilder.removeSpan(span)
         }
 
-        for(span in spanBuilder.getSpans(0,spanBuilder.length,ImageSpan::class.java)){
+        for (span in spanBuilder.getSpans(0, spanBuilder.length, ImageSpan::class.java)) {
             val start = spanBuilder.getSpanStart(span)
             val end = spanBuilder.getSpanEnd(span)
             val flags = spanBuilder.getSpanFlags(span)
-            val urlSpan : URLSpan =object :URLSpan(span.source){
+            val urlSpan: URLSpan = object : URLSpan(span.source) {
                 override fun onClick(widget: View?) {
-                    Route.openImageView(activity,span.source)
+                    Route.openImageView(activity, span.source)
                 }
             }
-            spanBuilder.setSpan(urlSpan,start,end,flags)
+            spanBuilder.setSpan(urlSpan, start, end, flags)
         }
         return spanBuilder
     }
@@ -455,20 +541,20 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             Route.goTopicDetail(activity, topicId)
             return
         }
-        Route.openBrowser(activity,url)
+        Route.openBrowser(activity, url)
 
     }
 
-    fun onBackPressed() : Boolean{
-        if(bsb!!.state == BottomSheetBehavior.STATE_EXPANDED){
+    fun onBackPressed(): Boolean {
+        if (bsb!!.state == BottomSheetBehavior.STATE_EXPANDED) {
             bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
             return true
         }
         return false
     }
 
-    private fun getCurrentTopic():TopicDetail{
-        val topicDetailHeadItem =  mAdapter.getItemAt(0) as TopicDetailHeadItem
+    private fun getCurrentTopic(): TopicDetail {
+        val topicDetailHeadItem = mAdapter.getItemAt(0) as TopicDetailHeadItem
         val data = topicDetailHeadItem.data as TopicDetail
         return data
 
