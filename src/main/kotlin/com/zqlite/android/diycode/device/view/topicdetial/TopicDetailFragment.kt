@@ -324,6 +324,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     inner class TopicReplyHolder(var binding: ListitemTopicReplyBinding) : TopicDetailHodler(binding.root) {
 
         fun bind(topicReply: TopicReply) {
+            if(topicReply.deleted){
+                topicReply.bodyHtml = "<s><font color=\"#FF0000\">此楼已删除</font></s>"
+            }
             binding.setVariable(BR.topicReply, topicReply)
             binding.executePendingBindings()
             NetworkUtils.instance!!.loadImage(binding.avatar, topicReply.user.avatarUrl, R.drawable.default_avatar)
