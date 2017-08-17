@@ -128,7 +128,10 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             val content = reply_edit.text.toString()
             if (content.isNotEmpty()) {
                 val topic = getCurrentTopic()
-                mPresenter!!.reply(topic.id, content)
+                val tail = "\n\n\n\n             DiyCode Android Client\n" +
+                                   "             Power by Kotlin" +
+                                   "             🍉🍉🍉\uD83C\uDF49\uD83C\uDF49\uD83C\uDF49"
+                mPresenter!!.reply(topic.id, content + tail)
             }
         }
 
@@ -520,6 +523,10 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 Logly.d("touch")
             }
             binding.replyFloor.setOnClickListener {
+                if (TokenStore.shouldLogin(context)) {
+                    Route.goLogin(activity)
+                    return@setOnClickListener
+                }
                 val floor = "#"+adapterPosition+"楼"
                 val user = " @" + topicReply.user.login+" "
                 if(bsb!!.state == BottomSheetBehavior.STATE_COLLAPSED){
