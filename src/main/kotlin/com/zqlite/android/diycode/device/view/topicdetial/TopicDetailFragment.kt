@@ -17,6 +17,8 @@
 package com.zqlite.android.diycode.device.view.topicdetial
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -72,6 +74,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     private val mAdapter: TopicDetailAdapter = TopicDetailAdapter()
 
     private var bsb: BottomSheetBehavior<NestedScrollView>? = null
+
+    private var fabVisible = true
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -103,6 +107,10 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                     fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).start()
                     fab_reply.isClickable = true
                 }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).start()
+                    fab_reply.isClickable = false
+                }
             }
 
         })
@@ -112,8 +120,6 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 return@setOnClickListener
             }
             bsb!!.state = BottomSheetBehavior.STATE_EXPANDED
-            fab_reply.isClickable = false
-            fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).start()
         }
 
         reply_commit.setOnClickListener {
@@ -179,6 +185,36 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         }
 
+        topic_detail.addOnScrollListener(object :RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    if(!fabVisible){
+                        fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).setListener(object :AnimatorListenerAdapter(){
+                            override fun onAnimationEnd(animation: Animator?) {
+                                fabVisible = true
+                            }
+                        }).start()
+                    }
+                }
+                if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_DRAGGING ){
+                    if(bsb!!.state == BottomSheetBehavior.STATE_EXPANDED){
+                        bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
+                    }
+                    if(fabVisible){
+                        fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).setListener(object :AnimatorListenerAdapter(){
+                            override fun onAnimationStart(animation: Animator?) {
+                                fabVisible = false
+                            }
+                        }).start()
+                    }
+                }
+            }
+        })
     }
 
     override fun initData() {
@@ -466,6 +502,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         fun bind(topicReply: TopicReply) {
             if (topicReply.deleted) {
                 topicReply.bodyHtml = "<s><font color=\"#FF0000\">此楼已删除</font></s>"
+                binding.replyFloor.visibility = View.INVISIBLE
+            }else{
+                binding.replyFloor.visibility = View.VISIBLE
             }
             binding.setVariable(BR.topicReply, topicReply)
             binding.executePendingBindings()
@@ -479,6 +518,15 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             binding.markdownView.text = addSpann(Html.fromHtml(topicReply.bodyHtml, URLImageParser(binding.markdownView, context), null))
             binding.root.setOnClickListener {
                 Logly.d("touch")
+            }
+            binding.replyFloor.setOnClickListener {
+                val floor = "#"+adapterPosition+"楼"
+                val user = " @" + topicReply.user.login+" "
+                if(bsb!!.state == BottomSheetBehavior.STATE_COLLAPSED){
+                    bsb!!.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+                reply_edit.setSelection(reply_edit.text.length)
+                reply_edit.append(floor + user)
             }
         }
     }
