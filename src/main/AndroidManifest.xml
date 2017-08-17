@@ -45,6 +45,12 @@
             android:theme="@style/SlideStyle"
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"/>
+        <activity
+            android:name="com.zqlite.android.diycode.device.view.custom.ImageViewerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/SlideStyle"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"/>
     </application>
 
 </manifest>

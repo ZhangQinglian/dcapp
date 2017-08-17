@@ -20,6 +20,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
 import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
@@ -53,4 +54,9 @@ object Route {
         activity.startActivity(intent)
     }
 
+    fun openImageView(activity: Activity,urlStr: String){
+        val intent : Intent = Intent(activity,ImageViewerActivity::class.java)
+        intent.putExtra("url",urlStr)
+        activity.startActivity(intent)
+    }
 }

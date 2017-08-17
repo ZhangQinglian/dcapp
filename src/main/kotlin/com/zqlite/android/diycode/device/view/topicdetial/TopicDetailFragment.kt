@@ -26,6 +26,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
 import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -256,7 +257,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 }
 
                 override fun onImageTap(p0: String?, p1: Int, p2: Int) {
-                    Logly.d("onImageTap")
+                    Route.openImageView(activity,p0!!)
                 }
 
                 override fun onKeystrokeTap(p0: String?) {
@@ -369,6 +370,18 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             }
             spanBuilder.setSpan(clickableSpan, start, end, flags)
             spanBuilder.removeSpan(span)
+        }
+
+        for(span in spanBuilder.getSpans(0,spanBuilder.length,ImageSpan::class.java)){
+            val start = spanBuilder.getSpanStart(span)
+            val end = spanBuilder.getSpanEnd(span)
+            val flags = spanBuilder.getSpanFlags(span)
+            val urlSpan : URLSpan =object :URLSpan(span.source){
+                override fun onClick(widget: View?) {
+                    Route.openImageView(activity,span.source)
+                }
+            }
+            spanBuilder.setSpan(urlSpan,start,end,flags)
         }
         return spanBuilder
     }
