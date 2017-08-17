@@ -19,8 +19,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.nshmura.snappyimageviewer.SnappyImageViewer
-        android:id="@+id/snappy_image_viewer"
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/photo_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </FrameLayout>

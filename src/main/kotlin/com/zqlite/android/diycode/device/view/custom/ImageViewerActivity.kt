@@ -16,9 +16,6 @@
 
 package com.zqlite.android.diycode.device.view.custom
 
-import android.os.Build
-import android.support.v4.app.ActivityCompat
-import android.transition.Fade
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.view.BaseActivity
@@ -32,19 +29,14 @@ class ImageViewerActivity : BaseActivity() {
     }
 
     override fun initView() {
-        snappy_image_viewer.addOnClosedListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                window.sharedElementReturnTransition = Fade(Fade.MODE_IN)
-            }
-            ActivityCompat.finishAfterTransition(this@ImageViewerActivity)
-        }
+
     }
 
     override fun initData() {
         val extra = intent.extras
         if(extra != null){
             val url = extra.getString("url")
-            NetworkUtils.getInstace(this@ImageViewerActivity)!!.loadImage(snappy_image_viewer.imageView,url,R.drawable.error)
+            NetworkUtils.getInstace(this@ImageViewerActivity)!!.loadImage(photo_view,url,R.drawable.error)
         }
     }
 }
