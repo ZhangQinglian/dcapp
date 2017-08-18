@@ -34,4 +34,6 @@
     <string name="comm_ok">确认</string>
     <string name="comm_cancel">取消</string>
 
+    <string name="click_avatar_to_login">点击头像登录</string>
+
 </resources>

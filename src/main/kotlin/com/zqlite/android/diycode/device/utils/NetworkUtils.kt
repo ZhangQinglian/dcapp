@@ -34,17 +34,26 @@ class NetworkUtils(context: Context) {
     var picsso: Picasso? = null
 
     init {
-        picsso = Picasso.Builder(context).downloader(OkHttpDownloader(context, 1024L * 1024 * 100)).build()
+        picsso = Picasso.Builder(context).listener({
+            p1, url, p3 ->
+            Logly.d("error url " + url)
+            p3.printStackTrace()
+
+        }).downloader(OkHttpDownloader(context, 1024L * 1024 * 100)).build()
     }
 
     fun loadImage(imageView: ImageView, url: String, defaultId: Int) {
-        picsso!!.load(url).error(defaultId).into(imageView)
+        var usefulUrl = url
+        if(usefulUrl.contains("large_avatar")){
+            usefulUrl = usefulUrl.replace("large_avatar","avatar")
+        }
+        picsso!!.load(usefulUrl).error(defaultId).into(imageView)
     }
 
     fun getReplyClickable(html: String): String {
         var parsedHtml = html
         var patternAt: Pattern = Pattern.compile("<a href=\"/.*?class=\"at_user\"")
-        var patternFloor : Pattern = Pattern.compile("<a href=\"#reply.*?class=\"at_floor\"")
+        var patternFloor: Pattern = Pattern.compile("<a href=\"#reply.*?class=\"at_floor\"")
         var matcher = patternAt.matcher(html)
         while (matcher.find()) {
             var s = matcher.group()
@@ -55,11 +64,11 @@ class NetworkUtils(context: Context) {
         }
 
         matcher = patternFloor.matcher(parsedHtml)
-        while (matcher.find()){
+        while (matcher.find()) {
             var s = matcher.group()
             var index = parsedHtml.indexOf(s)
-            var builder : StringBuilder = StringBuilder(parsedHtml)
-            builder.insert(index + 9,kLocalHostFloorAt)
+            var builder: StringBuilder = StringBuilder(parsedHtml)
+            builder.insert(index + 9, kLocalHostFloorAt)
             parsedHtml = builder.toString()
         }
         return parsedHtml
@@ -68,8 +77,8 @@ class NetworkUtils(context: Context) {
     companion object Factory {
         var instance: NetworkUtils? = null
         val kLocalHostUser: String = "http://localhost/user"
-        val kLocalHostFloorAt:String="http://localhost/floor_at"
-        val kTopicDetail :String = "https://www.diycode.cc/topics/"
+        val kLocalHostFloorAt: String = "http://localhost/floor_at"
+        val kTopicDetail: String = "https://www.diycode.cc/topics/"
         fun getInstace(context: Context): NetworkUtils? {
 
             if (instance == null) {

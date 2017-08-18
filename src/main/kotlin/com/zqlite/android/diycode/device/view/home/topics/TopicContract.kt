@@ -42,10 +42,13 @@ interface TopicContract {
         fun setCurrentNode(id:Int,position:Int)
 
         fun loadNextPage()
+
+        fun goTop()
     }
 
     interface View : IView<Presenter>{
         fun updateTopicList(topicList:List<Topic>)
         fun addTopicList(topicList: List<Topic>)
+        fun goTop()
     }
 }

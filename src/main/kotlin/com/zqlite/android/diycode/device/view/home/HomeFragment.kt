@@ -43,6 +43,7 @@ import kotlinx.android.synthetic.main.fragment_topic.*
  */
 class HomeFragment : BaseFragment(),HomeContract.View,HomeContract.CategoryCallback {
 
+
     private var mPresetner : HomeContract.Presenter? = null
 
     private var mTabLayout : TabLayout? = null
@@ -86,6 +87,14 @@ class HomeFragment : BaseFragment(),HomeContract.View,HomeContract.CategoryCallb
        mAdapter.notifyDataSetChanged()
     }
 
+    override fun homeClicked() {
+        val tabPositon = home_pager.currentItem
+        when(tabPositon){
+            0->{
+                topicPresenter!!.goTop()
+            }
+        }
+    }
     fun getCurrentCategoryId(): Int{
         return topicPresenter!!.getCurrentNodeId()
     }

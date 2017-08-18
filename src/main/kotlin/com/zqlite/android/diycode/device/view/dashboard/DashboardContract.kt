@@ -14,27 +14,24 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.home
+package com.zqlite.android.diycode.device.view.dashboard
 
+import android.content.Context
+import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
 /**
- * Created by scott on 2017/8/11.
+ * Created by scott on 2017/8/18.
  */
+interface DashboardContract {
 
-interface HomeContract{
-
-    interface CategoryCallback{
-        fun updateCategory(type : Int,categories : List<Category>)
-        fun justUpdateSelf()
-    }
-    interface Presenter : IPresenter{
-        fun homeClicked()
+    interface Presenter :IPresenter{
+        fun getLocalUser(context: Context)
     }
 
-    interface View : IView<Presenter>{
-        fun homeClicked()
+    interface View :IView<DashboardContract.Presenter>{
+        fun loadUserSuccess(userDetail: UserDetail)
+        fun needLogin()
     }
 }
-

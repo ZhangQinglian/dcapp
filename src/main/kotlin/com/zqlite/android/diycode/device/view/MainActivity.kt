@@ -19,6 +19,7 @@ package com.zqlite.android.diycode.device.view
 import android.support.design.widget.BottomNavigationView
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.dashboard.DashboardFragment
+import com.zqlite.android.diycode.device.view.dashboard.DashboardPresenter
 import com.zqlite.android.diycode.device.view.home.HomeContract
 import com.zqlite.android.diycode.device.view.home.HomeFragment
 import com.zqlite.android.diycode.device.view.home.HomePresenter
@@ -31,6 +32,13 @@ class MainActivity : BaseActivity() {
     private var mHomePresenter : HomeContract.Presenter? = null
 
     private var mDashboradFramgnet : DashboardFragment? = null
+    private var mDashboardPresenter : DashboardPresenter? = null
+    /**
+     * 0 home
+     * 1 notification
+     * 2 dashboard
+     */
+    private var mCurrentPage = 0
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
@@ -38,16 +46,23 @@ class MainActivity : BaseActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                if(mCurrentPage == 0){
+                    mHomePresenter!!.homeClicked()
+                    return@OnNavigationItemSelectedListener true
+                }
                 showFragment(mHomeFragment!!)
                 hideFragment(mDashboradFramgnet!!)
+                mCurrentPage = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
                 showFragment(mDashboradFramgnet!!)
                 hideFragment(mHomeFragment!!)
+                mCurrentPage = 2
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
+                mCurrentPage = 1
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -69,6 +84,7 @@ class MainActivity : BaseActivity() {
         //dashboard
         if(mDashboradFramgnet == null){
             mDashboradFramgnet = DashboardFragment.getInstance(null)
+            mDashboardPresenter = DashboardPresenter(mDashboradFramgnet!!)
             addFragment(mDashboradFramgnet!!,R.id.home_container)
         }
 

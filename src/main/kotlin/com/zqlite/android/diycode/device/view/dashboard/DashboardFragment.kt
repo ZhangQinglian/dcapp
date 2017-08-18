@@ -17,21 +17,50 @@
 package com.zqlite.android.diycode.device.view.dashboard
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import com.zqlite.android.dclib.entiry.UserDetail
+import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
+import com.zqlite.android.diycode.databinding.FragmentDashboardBinding
+import com.zqlite.android.diycode.device.utils.NetworkUtils
+import com.zqlite.android.diycode.device.utils.Route
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
-
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 /**
  * Created by scott on 2017/8/16.
  */
-class DashboardFragment : BaseFragment() {
+class DashboardFragment : BaseFragment(),DashboardContract.View {
+
+
+
+    private var mPresenter : DashboardContract.Presenter? = null
+
+    private var mBinding : FragmentDashboardBinding? = null
+
+    override fun setPresenter(presenter: DashboardContract.Presenter) {
+        mPresenter = presenter
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_dashboard
     }
 
     override fun initView() {
+        mBinding = FragmentDashboardBinding.bind(view)
+        fresh_layout.setOnRefreshListener {
+            mPresenter!!.getLocalUser(context)
+        }
+        fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
+        mBinding!!.avatar.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+            }
+        }
     }
 
     override fun initData() {
+        mPresenter!!.getLocalUser(context)
     }
 
     companion object Factory{
@@ -43,5 +72,17 @@ class DashboardFragment : BaseFragment() {
             }
             return fragment
         }
+    }
+
+    override fun loadUserSuccess(userDetail: UserDetail) {
+        mBinding!!.setVariable(BR.user,userDetail)
+        mBinding!!.executePendingBindings()
+        mBinding!!.userName.text = userDetail.name
+        fresh_layout.isRefreshing = false
+        NetworkUtils.getInstace(context)!!.loadImage(mBinding!!.avatar,userDetail.avatarUrl,R.drawable.default_avatar)
+    }
+
+    override fun needLogin() {
+        fresh_layout.isRefreshing = false
     }
 }

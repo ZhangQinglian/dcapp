@@ -21,6 +21,7 @@ package com.zqlite.android.diycode.device.view.home
  */
 class HomePresenter constructor(var mView:HomeContract.View): HomeContract.Presenter {
 
+
     init {
         mView.setPresenter(this)
     }
@@ -30,5 +31,9 @@ class HomePresenter constructor(var mView:HomeContract.View): HomeContract.Prese
     }
 
     override fun stop() {
+    }
+
+    override fun homeClicked() {
+        mView.homeClicked()
     }
 }

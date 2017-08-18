@@ -117,8 +117,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         })
         fab_reply.setOnClickListener {
-            if (TokenStore.shouldLogin(context)) {
-                Route.goLogin(activity)
+            if (checkLogin()) {
                 return@setOnClickListener
             }
             bsb!!.state = BottomSheetBehavior.STATE_EXPANDED
@@ -130,10 +129,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             val content = reply_edit.text.toString()
             if (content.isNotEmpty()) {
                 val topic = getCurrentTopic()
-                val tail = "\n\n\n\n             DiyCode Android Client\n" +
-                                   "             Power by Kotlin" +
-                                   "             🍉🍉🍉\uD83C\uDF49\uD83C\uDF49\uD83C\uDF49"
-                mPresenter!!.reply(topic.id, content + tail)
+
+                mPresenter!!.reply(topic.id, content)
                 needGoBottom = true
             }
         }
@@ -472,6 +469,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.like.setImageResource(R.drawable.ic_like_normal)
                 binding.like.setOnClickListener {
+                    if(checkLogin()){
+                        return@setOnClickListener
+                    }
                     mPresenter!!.likeTopic(topicDetail.id)
                     binding.like.isClickable = false
                 }
@@ -486,6 +486,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.follow.setImageResource(R.drawable.ic_topic_follow_normal)
                 binding.follow.setOnClickListener {
+                    if(checkLogin()){
+                        return@setOnClickListener
+                    }
                     mPresenter!!.followTopic(topicDetail.id)
                     binding.follow.isClickable = false
                 }
@@ -500,6 +503,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.favorite.setImageResource(R.drawable.ic_topic_favorite_normal)
                 binding.favorite.setOnClickListener {
+                    if(checkLogin()){
+                        return@setOnClickListener
+                    }
                     binding.favorite.isClickable = false
                     mPresenter!!.favoriteTopic(topicDetail.id)
                 }
@@ -537,8 +543,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 Logly.d("touch")
             }
             binding.replyFloor.setOnClickListener {
-                if (TokenStore.shouldLogin(context)) {
-                    Route.goLogin(activity)
+                if (checkLogin()) {
                     return@setOnClickListener
                 }
                 val floor = "#"+adapterPosition+"楼"
@@ -627,5 +632,13 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         val data = topicDetailHeadItem.data as TopicDetail
         return data
 
+    }
+
+    private fun checkLogin():Boolean{
+        if(TokenStore.shouldLogin(context)){
+            Route.goLogin(activity)
+            return true
+        }
+        return false
     }
 }

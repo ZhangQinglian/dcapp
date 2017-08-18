@@ -166,14 +166,7 @@
             android:layout_alignBottom="@id/topic_comment_count"
             android:src="@drawable/ic_topic_comments" />
 
-        <ImageView
-            android:id="@+id/favorite"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_below="@id/hitTimes"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"/>
+
 
 
         <ImageView
@@ -191,6 +184,15 @@
             android:layout_below="@id/hitTimes"
             android:layout_alignLeft="@id/like_count"
             android:layout_marginTop="10dp"/>
+
+        <ImageView
+            android:id="@+id/favorite"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/hitTimes"
+            android:layout_toRightOf="@id/like"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"/>
 
     </RelativeLayout>
 </layout>

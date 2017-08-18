@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2017 zhangqinglian
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +13,148 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    <data>
 
-</LinearLayout>
+        <variable
+            name="user"
+            type="com.zqlite.android.dclib.entiry.UserDetail" />
+
+    </data>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bgGray"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/white"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="30dp"
+                        android:src="@drawable/default_avatar" />
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/click_avatar_to_login"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{user.getLoginDes}"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_info"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_personnal" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="个人资料" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_topic"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_topic" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="我的话题" />
+
+                    <TextView
+                        style="@style/DashboardMenuCount"
+                        android:text="@{user.getTopicCountDes}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_following"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_follow" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="我的关注" />
+
+                    <TextView
+                        style="@style/DashboardMenuCount"
+                        android:text="@{user.getFollowingCountDes}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_followers"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_followers" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="关注我的人" />
+
+                    <TextView
+                        style="@style/DashboardMenuCount"
+                        android:text="@{user.getFollowerCountDes}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_favorite"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_favorite" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="我的收藏" />
+
+                    <TextView
+                        style="@style/DashboardMenuCount"
+                        android:text="@{user.getFavoriteDes}" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</layout>

@@ -31,6 +31,7 @@ import kotlin.Comparator
  */
 class TopicPresenter(var mView: TopicContract.View,var mCategoryCallback: HomeContract.CategoryCallback) : TopicContract.Presenter {
 
+
     private val LIMIT : Int = 20
 
     //当前选择的Node的Id
@@ -112,5 +113,7 @@ class TopicPresenter(var mView: TopicContract.View,var mCategoryCallback: HomeCo
         }
     }
 
-
+    override fun goTop() {
+        mView.goTop()
+    }
 }

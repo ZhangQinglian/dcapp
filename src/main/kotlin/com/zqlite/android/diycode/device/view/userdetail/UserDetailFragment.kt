@@ -69,8 +69,8 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         mAdapter.addUserDetail(user)
         if(!TokenStore.shouldLogin(context)){
             mPresenter!!.getFollowing(TokenStore.getCurrentLogin(context))
-            mPresenter!!.getUserTopic(user.login)
         }
+        mPresenter!!.getUserTopic(user.login)
     }
 
     override fun updateUserTopics(topics: List<Topic>) {

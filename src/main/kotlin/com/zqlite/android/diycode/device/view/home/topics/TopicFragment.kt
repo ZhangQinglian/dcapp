@@ -16,28 +16,19 @@
 
 package com.zqlite.android.diycode.device.view.home.topics
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.dclib.entiry.Topic
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicBinding
-import com.zqlite.android.diycode.databinding.ListitemTopicNodeItemBinding
-import com.zqlite.android.diycode.device.utils.CalendarUtils
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.view.BaseFragment
-import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
-import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic.*
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
 
@@ -45,6 +36,7 @@ import kotlinx.android.synthetic.main.fragment_topic_detail.*
  * Created by scott on 2017/8/11.
  */
 class TopicFragment : BaseFragment(), TopicContract.View {
+
 
     private var mPresenter: TopicContract.Presenter? = null
 
@@ -98,7 +90,9 @@ class TopicFragment : BaseFragment(), TopicContract.View {
         mAdapter.addTopicList(topicList)
     }
 
-
+    override fun goTop() {
+        topic_list.smoothScrollToPosition(0)
+    }
     companion object Factory {
         fun getInstance(bundle: Bundle?): TopicFragment {
             var tf = TopicFragment()
