@@ -89,6 +89,7 @@ class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContr
         DiyCodeApi.loadUserTopics(login,newOffset,LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     mView.addUserTopics(it)
+                    currentOffset += it.size
                 },{}
         )
     }
