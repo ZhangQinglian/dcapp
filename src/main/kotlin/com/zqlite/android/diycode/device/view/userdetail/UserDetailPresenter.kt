@@ -25,7 +25,9 @@ import io.reactivex.schedulers.Schedulers
  * Created by scott on 2017/8/14.
  */
 class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContract.Presenter {
+    private val LIMIT : Int = 20
 
+    private var currentOffset = 0
 
     init {
         mView.setPresenter(this)
@@ -75,4 +77,21 @@ class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContr
                 }
         )
     }
+    override fun getUserTopic(login: String) {
+       DiyCodeApi.loadUserTopics(login,currentOffset,LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+               {
+                   mView.updateUserTopics(it)
+               },{}
+       )
+    }
+    override fun loadNextPageTopic(login: String) {
+        var newOffset = currentOffset + LIMIT
+        DiyCodeApi.loadUserTopics(login,newOffset,LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.addUserTopics(it)
+                },{}
+        )
+    }
+
+
 }

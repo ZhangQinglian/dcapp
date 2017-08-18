@@ -107,7 +107,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="7dp"
-            android:background="@drawable/shadow"/>
+            android:background="@drawable/shadow"
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 
 </layout>

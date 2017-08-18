@@ -16,6 +16,7 @@
 
 package com.zqlite.android.diycode.device.view.userdetail
 
+import com.zqlite.android.dclib.entiry.Topic
 import com.zqlite.android.dclib.entiry.User
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
@@ -31,11 +32,15 @@ interface UserDetailContract {
         fun followUser(login: String)
         fun unFollowUser(login: String)
         fun getFollowing(login: String)
+        fun getUserTopic(login: String)
+        fun loadNextPageTopic(login:String)
     }
 
     interface View : IView<UserDetailContract.Presenter>{
         fun updateUser(user :UserDetail)
         fun updateFollowStatus(login: String,isFollow:Boolean,change :Int)
         fun updateFollowing(followingUser:List<User>)
+        fun updateUserTopics(topics:List<Topic>)
+        fun addUserTopics(topics: List<Topic>)
     }
 }

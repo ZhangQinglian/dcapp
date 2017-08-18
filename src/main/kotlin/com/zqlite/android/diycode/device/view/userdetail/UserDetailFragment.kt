@@ -23,15 +23,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.zqlite.android.dclib.entiry.Topic
 import com.zqlite.android.dclib.entiry.User
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
+import com.zqlite.android.diycode.databinding.ListitemTopicBinding
 import com.zqlite.android.diycode.databinding.ListitemUserDetailHeadBinding
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.diycode.device.view.home.topics.TopicFragment
 import kotlinx.android.synthetic.main.fragment_user_detail.*
 
 /**
@@ -66,9 +69,16 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         mAdapter.addUserDetail(user)
         if(!TokenStore.shouldLogin(context)){
             mPresenter!!.getFollowing(TokenStore.getCurrentLogin(context))
+            mPresenter!!.getUserTopic(user.login)
         }
     }
 
+    override fun updateUserTopics(topics: List<Topic>) {
+        mAdapter.updateUserTopic(topics)
+    }
+    override fun addUserTopics(topics: List<Topic>) {
+        mAdapter.addUserTopics(topics)
+    }
     override fun updateFollowing(followingUser: List<User>) {
         val userDetailData = mAdapter.getUserDetailData(0)
         if(userDetailData.type == UserDetailData.TYPE_HEAD){
@@ -137,15 +147,44 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
 
         private val userDetails = mutableListOf<UserDetailData>()
 
+        fun updateUserTopic(topics: List<Topic>){
+            val head = userDetails.filter {
+                it.type == UserDetailData.TYPE_HEAD
+            }
+
+            userDetails.clear()
+            userDetails.addAll(head)
+            userDetails.addAll(topics.map {
+                UserDetailData(it,UserDetailData.TYPE_REPLY)
+            })
+            notifyItemRangeChanged(1,topics.size)
+        }
+        fun addUserTopics(topics: List<Topic>){
+            val topicsList = topics.map {
+                UserDetailData(it,UserDetailData.TYPE_REPLY)
+            }
+            userDetails.addAll(topicsList)
+            notifyItemRangeChanged(userDetails.size - topics.size - 1,topics.size)
+        }
+
         override fun onBindViewHolder(holder: UserDetailItemHolder?, position: Int) {
             var data : UserDetailData = userDetails.get(position)
             val type = getItemViewType(position)
             when(type){
-                0->{
+                UserDetailData.TYPE_HEAD->{
                     val userDetail : UserDetail = data.data as UserDetail
                     (holder as UserDetailHeadHolder).bind(userDetail)
                 }
+                UserDetailData.TYPE_REPLY->{
+                    val topic : Topic = data.data as Topic
+                    (holder as UserTopicHolder).bind(topic)
+                    if(position == userDetails.size - 1){
+                        mPresenter!!.loadNextPageTopic(topic.user.login)
+                    }
+                }
             }
+
+
         }
 
         override fun getItemCount(): Int {
@@ -165,17 +204,22 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): UserDetailItemHolder? {
             val inflater : LayoutInflater = LayoutInflater.from(context)
             when(viewType){
-                0->{
+                UserDetailData.TYPE_HEAD->{
                     val binding : ListitemUserDetailHeadBinding = ListitemUserDetailHeadBinding.inflate(inflater,parent,false)
                     return UserDetailHeadHolder(binding)
-                }else-> return null
+                }
+                UserDetailData.TYPE_REPLY->{
+                    val binding : ListitemTopicBinding = ListitemTopicBinding.inflate(inflater,parent,false)
+                    return UserTopicHolder(binding)
+                }
+                else-> return null
             }
         }
 
         override fun getItemViewType(position: Int): Int {
             when (position) {
-                0 -> return 0
-                else -> return 1
+                0 -> return UserDetailData.TYPE_HEAD
+                else -> return UserDetailData.TYPE_REPLY
             }
         }
 
@@ -191,11 +235,22 @@ class UserDetailFragment : BaseFragment(), UserDetailContract.View {
 
     inner abstract class UserDetailItemHolder(view: View) : RecyclerView.ViewHolder(view)
 
+    private inner class UserTopicHolder(var binding: ListitemTopicBinding) : UserDetailItemHolder(binding.root) {
+        fun bind(topic: Topic) {
+            binding.setVariable(BR.topic, topic)
+            binding.executePendingBindings()
+            NetworkUtils.getInstace(context)!!.loadImage(binding.avatar, topic.user.avatarUrl, R.drawable.default_avatar)
+            binding.root.setOnClickListener {
+                Route.goTopicDetail(activity, topic.id)
+            }
+        }
+    }
+
     class UserDetailData(val data:Any,val type:Int){
 
         companion object Constant{
             val TYPE_HEAD:Int = 0
-            val TYPE_NORMAL:Int = 1
+            val TYPE_REPLY:Int = 1
         }
     }
 }
