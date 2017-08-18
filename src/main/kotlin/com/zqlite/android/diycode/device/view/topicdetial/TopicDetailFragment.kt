@@ -19,11 +19,11 @@ package com.zqlite.android.diycode.device.view.topicdetial
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
@@ -76,6 +76,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     private var bsb: BottomSheetBehavior<NestedScrollView>? = null
 
     private var fabVisible = true
+
+    private var needGoBottom = false
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -132,6 +134,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                                    "             Power by Kotlin" +
                                    "             🍉🍉🍉\uD83C\uDF49\uD83C\uDF49\uD83C\uDF49"
                 mPresenter!!.reply(topic.id, content + tail)
+                needGoBottom = true
             }
         }
 
@@ -230,7 +233,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     override fun updateReplies(replies: List<TopicReply>) {
         var topicRepliesList = replies.map { TopicRepliesItem(it) }
-        mAdapter.setItems(topicRepliesList)
+        mAdapter.addReplies(topicRepliesList)
+        fresh_layout.isRefreshing = false
     }
 
     override fun updateLikeStatus(topicId: Int, isLike: Boolean) {
@@ -309,7 +313,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
         fresh_layout.isRefreshing = true
         Toast.makeText(context, R.string.reply_success, Toast.LENGTH_SHORT).show()
-        mPresenter!!.loadTopicDetail(-1)
+        mPresenter!!.loadTopicReplies(-1)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -347,9 +351,19 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             notifyDataSetChanged()
         }
 
-        fun setItems(items: List<TopicDetailItem>) {
+        fun addReplies(items: List<TopicDetailItem>) {
+            val head = itemList.filter {
+                it is TopicDetailHeadItem
+            }
+            itemList.clear()
+            itemList.addAll(head)
             itemList.addAll(items)
-            notifyDataSetChanged()
+            notifyItemRangeChanged(1,items.size)
+            if(needGoBottom){
+                Handler().postDelayed({
+                    topic_detail.smoothScrollToPosition(itemCount)
+                },300)
+            }
         }
 
         fun getItemAt(index: Int): TopicDetailItem {

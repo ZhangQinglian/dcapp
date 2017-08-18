@@ -56,7 +56,10 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     }
 
     override fun loadTopicReplies(id: Int) {
-        DiyCodeApi.loadTopicReplies(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+        if (id != -1) {
+            mId = id
+        }
+        DiyCodeApi.loadTopicReplies(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
             mView.updateReplies(it)
         }
     }
