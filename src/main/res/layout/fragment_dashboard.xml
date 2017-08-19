@@ -95,7 +95,7 @@
 
                     <TextView
                         style="@style/DashboardMenuText"
-                        android:text="我的话题" />
+                        android:text="@string/my_topic" />
 
                     <TextView
                         style="@style/DashboardMenuCount"
@@ -129,7 +129,7 @@
 
                     <TextView
                         style="@style/DashboardMenuText"
-                        android:text="关注我的人" />
+                        android:text="@string/my_followers" />
 
                     <TextView
                         style="@style/DashboardMenuCount"

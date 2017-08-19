@@ -37,7 +37,7 @@ class FavoriteActivity : BaseActivity() {
     override fun initView() {
         //action bar
         setSupportActionBar(toolbar)
-        supportActionBar!!.setTitle(R.string.my_favorite)
+
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back)
         toolbar.setNavigationOnClickListener({
             finish()
@@ -47,8 +47,15 @@ class FavoriteActivity : BaseActivity() {
         DecorViewProxy().bind(this)
 
         val login = intent.extras["login"] as String
+        val type = intent.extras["type"] as Int
+
+        when(type){
+            0-> supportActionBar!!.setTitle(R.string.my_favorite)
+            1->supportActionBar!!.setTitle(R.string.my_topic)
+        }
         val args = Bundle()
         args.putString("login",login)
+        args.putInt("type",type)
         mFragment = FavoriteFragment.getInstance(args)
         mPresenter = FavoritePresenter(mFragment!!)
         addFragment(mFragment!!,R.id.favorite_container)

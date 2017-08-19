@@ -60,7 +60,7 @@
             android:hardwareAccelerated="true"/>
 
         <activity
-            android:name="com.zqlite.android.diycode.device.view.following.FollowingAvtivity"
+            android:name="com.zqlite.android.diycode.device.view.follow.FollowAvtivity"
             android:label="@string/app_name"
             android:theme="@style/SlideStyle"
             android:screenOrientation="portrait"

@@ -24,7 +24,7 @@ import android.support.v4.app.Fragment
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
 import com.zqlite.android.diycode.device.view.favorite.FavoriteActivity
-import com.zqlite.android.diycode.device.view.following.FollowingAvtivity
+import com.zqlite.android.diycode.device.view.follow.FollowAvtivity
 import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
@@ -77,12 +77,27 @@ object Route {
     fun goFavorite(loginName: String,activity: Activity){
         val intent = Intent(activity,FavoriteActivity::class.java)
         intent.putExtra("login",loginName)
+        intent.putExtra("type",0)
+        activity.startActivity(intent)
+    }
+    fun goMyTopic(loginName: String,activity: Activity){
+        val intent = Intent(activity,FavoriteActivity::class.java)
+        intent.putExtra("login",loginName)
+        intent.putExtra("type",1)
         activity.startActivity(intent)
     }
 
     fun goFollowing(loginName: String,activity: Activity){
-        val intent = Intent(activity,FollowingAvtivity::class.java)
+        val intent = Intent(activity, FollowAvtivity::class.java)
         intent.putExtra("login",loginName)
+        intent.putExtra("type",0)
         activity.startActivity(intent)
     }
+    fun goFollowers(loginName: String,activity: Activity){
+        val intent = Intent(activity, FollowAvtivity::class.java)
+        intent.putExtra("login",loginName)
+        intent.putExtra("type",1)
+        activity.startActivity(intent)
+    }
+
 }

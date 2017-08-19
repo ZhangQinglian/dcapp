@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.following
+package com.zqlite.android.diycode.device.view.follow
 
 import android.os.Bundle
 import com.zqlite.android.diycode.R
@@ -25,10 +25,10 @@ import kotlinx.android.synthetic.main.activity_following.*
 /**
  * Created by scott on 2017/8/19.
  */
-class FollowingAvtivity : BaseActivity() {
+class FollowAvtivity : BaseActivity() {
 
-    private var mPresenter : FollowingContract.Presenter? = null
-    private var mFragment : FollowingFragment ? = null
+    private var mPresenter : FollowContract.Presenter? = null
+    private var mFragment : FollowFragment? = null
 
     override fun getLayoutId(): Int {
         return R.layout.activity_following
@@ -38,7 +38,7 @@ class FollowingAvtivity : BaseActivity() {
 
         //action bar
         setSupportActionBar(toolbar)
-        supportActionBar!!.setTitle(R.string.my_following)
+
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back)
         toolbar.setNavigationOnClickListener({
             finish()
@@ -49,9 +49,15 @@ class FollowingAvtivity : BaseActivity() {
 
         val args = Bundle()
         val login = intent.extras["login"] as String
+        val type = intent.extras["type"] as Int
         args.putString("login",login)
-        mFragment = FollowingFragment.getInstance(args)
-        mPresenter = FollowingPresenter(mFragment!!)
+        args.putInt("type",type)
+        when(type){
+            0->  supportActionBar!!.setTitle(R.string.my_following)
+            1-> supportActionBar!!.setTitle(R.string.my_followers)
+        }
+        mFragment = FollowFragment.getInstance(args)
+        mPresenter = FollowPresenter(mFragment!!)
         addFragment(mFragment!!,R.id.following_container)
 
     }

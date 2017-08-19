@@ -32,42 +32,60 @@ import java.io.File
 class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailContract.Presenter {
 
 
-
     var mId: Int? = null
+
+    var mIsStart = false
 
     init {
         mView.setPresenter(this)
     }
 
     override fun start() {
+        mIsStart = true
     }
 
     override fun stop() {
+        mIsStart = false
     }
 
     override fun loadTopicDetail(id: Int) {
         if (id != -1) {
             mId = id
         }
-        DiyCodeApi.loadTopicDetail(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            mView.updateTopicDetail(it)
-            loadTopicReplies(mId!!)
-        }
+        DiyCodeApi.loadTopicDetail(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    if (mIsStart) {
+                        mView.updateTopicDetail(it)
+                        loadTopicReplies(mId!!)
+                    }
+                },
+                {
+
+                }
+
+        )
     }
 
     override fun loadTopicReplies(id: Int) {
         if (id != -1) {
             mId = id
         }
-        DiyCodeApi.loadTopicReplies(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            mView.updateReplies(it)
-        }
+        DiyCodeApi.loadTopicReplies(mId!!).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    if (mIsStart) {
+                        mView.updateReplies(it)
+                    }
+                },
+                {}
+        )
     }
 
     override fun followTopic(topicId: Int) {
         DiyCodeApi.followTopic(topicId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateFollowStatus(topicId, true)
+                    if (mIsStart) {
+                        mView.updateFollowStatus(topicId, true)
+                    }
                 },
                 {
 
@@ -79,7 +97,9 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun unFollowTopic(topicId: Int) {
         DiyCodeApi.unfollowTopic(topicId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateFollowStatus(topicId, false)
+                    if (mIsStart) {
+                        mView.updateFollowStatus(topicId, false)
+                    }
                 },
                 {
 
@@ -91,7 +111,9 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun likeTopic(id: Int) {
         DiyCodeApi.like(id, type = DiyCodeContract.LikeType.TYPE_TOPIC).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateLikeStatus(id, true)
+                    if (mIsStart) {
+                        mView.updateLikeStatus(id, true)
+                    }
                 },
                 {}
         )
@@ -101,7 +123,9 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun unlikeTopic(id: Int) {
         DiyCodeApi.unlike(id, type = DiyCodeContract.LikeType.TYPE_TOPIC).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateLikeStatus(id, false)
+                    if (mIsStart) {
+                        mView.updateLikeStatus(id, false)
+                    }
                 },
                 {}
         )
@@ -110,7 +134,9 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun favoriteTopic(id: Int) {
         DiyCodeApi.favoriteTopic(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateFavoriteStatus(id, true)
+                    if (mIsStart) {
+                        mView.updateFavoriteStatus(id, true)
+                    }
                 },
                 {}
         )
@@ -119,34 +145,43 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
     override fun unFavoriteTopic(id: Int) {
         DiyCodeApi.unFavoriteTopic(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateFavoriteStatus(id, false)
+                    if (mIsStart) {
+                        mView.updateFavoriteStatus(id, false)
+                    }
                 },
                 {}
         )
     }
 
     override fun reply(id: Int, content: String) {
-        DiyCodeApi.replyTopic(id,content).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+        DiyCodeApi.replyTopic(id, content).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    mView.updateReplySuccess()
-                },{}
+                    if (mIsStart) {
+                        mView.updateReplySuccess()
+                    }
+                }, {}
         )
     }
 
     override fun uploadImage(file: File) {
         DiyCodeApi.uploadPhoto(file).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    val jsonObject = JSONObject(it.string())
-                    val url = jsonObject.optString("image_url","")
-                    if(url.isNotEmpty()){
-                        mView.uploadSuccess(url)
-                    }else{
-                        mView.uploadError()
+                    if (mIsStart) {
+                        val jsonObject = JSONObject(it.string())
+                        val url = jsonObject.optString("image_url", "")
+                        if (url.isNotEmpty()) {
+                            mView.uploadSuccess(url)
+                        } else {
+                            mView.uploadError()
+                        }
                     }
+
 
                 },
                 {
-                    mView.uploadError()
+                    if (mIsStart) {
+                        mView.uploadError()
+                    }
                 }
         )
     }

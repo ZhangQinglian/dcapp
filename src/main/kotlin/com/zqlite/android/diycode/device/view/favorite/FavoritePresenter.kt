@@ -40,31 +40,65 @@ class FavoritePresenter(val mView: FavoriteContract.View) : FavoriteContract.Pre
     override fun stop() {
     }
 
-    override fun loadFavorite(login: String) {
-        DiyCodeApi.getFavoriteTopics(login, 0, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                {
-                    mView.loadFavoriteSuccess(it)
-                },
-                {
-                    mView.loadFavoriteError()
-                }
-        )
+    override fun loadTopic(login: String,type :Int) {
+        when(type){
+            0->{
+                DiyCodeApi.getFavoriteTopics(login, 0, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                        {
+                            mView.loadFavoriteSuccess(it)
+                        },
+                        {
+                            mView.loadFavoriteError()
+                        }
+                )
+            }
+            1->{
+                DiyCodeApi.loadUserTopics(login, 0, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                        {
+                            mView.loadFavoriteSuccess(it)
+                        },
+                        {
+                            mView.loadFavoriteError()
+                        }
+                )
+            }
+        }
+
     }
 
-    override fun loadNext(login: String) {
+    override fun loadNext(login: String,type:Int) {
         val offset = mCurrentOffset + LIMIT
-        DiyCodeApi.getFavoriteTopics(login, offset, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                {
-                    if(it.isEmpty()){
-                        return@subscribe
-                    }
-                    mView.loadFavoriteSuccess(it)
-                    mCurrentOffset+=it.size
-                },
-                {
-                    mView.loadFavoriteError()
-                }
-        )
+        when(type){
+            0->{
+                DiyCodeApi.getFavoriteTopics(login, offset, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                        {
+                            if(it.isEmpty()){
+                                return@subscribe
+                            }
+                            mView.loadFavoriteSuccess(it)
+                            mCurrentOffset+=it.size
+                        },
+                        {
+                            mView.loadFavoriteError()
+                        }
+                )
+            }
+            1->{
+                DiyCodeApi.loadUserTopics(login, offset, LIMIT).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                        {
+                            if(it.isEmpty()){
+                                return@subscribe
+                            }
+                            mView.loadFavoriteSuccess(it)
+                            mCurrentOffset+=it.size
+                        },
+                        {
+                            mView.loadFavoriteError()
+                        }
+                )
+            }
+        }
+
     }
 
 }

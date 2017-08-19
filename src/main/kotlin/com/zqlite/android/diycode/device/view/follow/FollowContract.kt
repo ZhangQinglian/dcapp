@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.following
+package com.zqlite.android.diycode.device.view.follow
 
 import com.zqlite.android.dclib.entiry.User
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
@@ -23,13 +23,19 @@ import com.zqlite.android.diycode.device.view.imvp.IView
 /**
  * Created by scott on 2017/8/19.
  */
-interface FollowingContract {
+interface FollowContract {
 
     interface Presenter : IPresenter{
-        fun loadFollowing(login:String)
+        /**
+         * 加载关注或被关注的用户
+         * @type
+         *    0  关注的用户
+         *    1 被关注的用户
+         */
+        fun loadFollowing(login:String,type:Int)
     }
 
-    interface View : IView<FollowingContract.Presenter>{
+    interface View : IView<FollowContract.Presenter>{
         fun loadFollowingSuccess(users :List<User>)
         fun loadError()
     }

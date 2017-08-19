@@ -17,7 +17,6 @@
 package com.zqlite.android.diycode.device.view.favorite
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -40,6 +39,8 @@ class FavoriteFragment : BaseFragment(),FavoriteContract.View {
     private val mAdapter = FavoriteAdapter()
 
     private var mLogin : String? = null
+
+    private var mType = -1
     override fun setPresenter(presenter: FavoriteContract.Presenter) {
         mPresenter = presenter
     }
@@ -58,7 +59,8 @@ class FavoriteFragment : BaseFragment(),FavoriteContract.View {
 
     override fun initData() {
         mLogin = arguments.getString("login")
-        mPresenter!!.loadFavorite(mLogin!!)
+        mType = arguments["type"] as Int
+        mPresenter!!.loadTopic(mLogin!!,mType)
     }
 
     override fun loadFavoriteSuccess(topics: List<Topic>) {
@@ -70,8 +72,7 @@ class FavoriteFragment : BaseFragment(),FavoriteContract.View {
 
     override fun onResume() {
         super.onResume()
-        mLogin = arguments.getString("login")
-        mPresenter!!.loadFavorite(mLogin!!)
+        mPresenter!!.loadTopic(mLogin!!,mType)
     }
 
     private inner class FavoriteAdapter : RecyclerView.Adapter<TopicItemHolder>(){
@@ -88,7 +89,7 @@ class FavoriteFragment : BaseFragment(),FavoriteContract.View {
             val topic = topics[position]
             holder!!.bind(topic)
             if(position == topics.size - 1){
-                mPresenter!!.loadNext(mLogin!!)
+                mPresenter!!.loadNext(mLogin!!,mType)
             }
         }
 

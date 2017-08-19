@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.following
+package com.zqlite.android.diycode.device.view.follow
 
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -22,7 +22,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import com.zqlite.android.dclib.entiry.User
 import com.zqlite.android.diycode.R
@@ -34,13 +33,13 @@ import kotlinx.android.synthetic.main.fragment_following.*
 /**
  * Created by scott on 2017/8/19.
  */
-class FollowingFragment : BaseFragment(),FollowingContract.View {
+class FollowFragment : BaseFragment(), FollowContract.View {
 
 
-    private var mPresenter : FollowingContract.Presenter? = null
+    private var mPresenter : FollowContract.Presenter? = null
     private val mAdapter = FollowingAdapter()
 
-    override fun setPresenter(presenter: FollowingContract.Presenter) {
+    override fun setPresenter(presenter: FollowContract.Presenter) {
         mPresenter = presenter
     }
 
@@ -57,7 +56,8 @@ class FollowingFragment : BaseFragment(),FollowingContract.View {
 
     override fun initData() {
         val login = arguments["login"] as String
-        mPresenter!!.loadFollowing(login)
+        val type = arguments["type"] as Int
+        mPresenter!!.loadFollowing(login,type)
     }
 
 
@@ -67,7 +67,8 @@ class FollowingFragment : BaseFragment(),FollowingContract.View {
     override fun onResume() {
         super.onResume()
         val login = arguments["login"] as String
-        mPresenter!!.loadFollowing(login)
+        val type = arguments["type"] as Int
+        mPresenter!!.loadFollowing(login,type)
     }
     override fun loadFollowingSuccess(users: List<User>) {
         mAdapter.users.clear()
@@ -75,8 +76,8 @@ class FollowingFragment : BaseFragment(),FollowingContract.View {
         mAdapter.notifyDataSetChanged()
     }
     companion object Factory{
-        fun getInstance(args:Bundle?):FollowingFragment{
-            val fragment = FollowingFragment()
+        fun getInstance(args:Bundle?): FollowFragment {
+            val fragment = FollowFragment()
             if(args != null){
                 fragment.arguments = args
             }

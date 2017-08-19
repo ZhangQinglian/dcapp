@@ -26,8 +26,13 @@ import com.zqlite.android.diycode.device.view.imvp.IView
 interface FavoriteContract {
 
     interface Presenter:IPresenter{
-        fun loadFavorite(login:String)
-        fun loadNext(login: String)
+        /**
+         * @type
+         *     0 收藏的话题
+         *     1 发表的话题
+         */
+        fun loadTopic(login:String,type:Int)
+        fun loadNext(login: String,type:Int)
     }
 
     interface View :IView<FavoriteContract.Presenter>{

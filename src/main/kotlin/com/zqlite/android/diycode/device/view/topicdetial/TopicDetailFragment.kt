@@ -80,6 +80,16 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     private var fabVisible = true
 
     private var needGoBottom = false
+
+    override fun onStart() {
+        super.onStart()
+        mPresenter!!.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mPresenter!!.stop()
+    }
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }

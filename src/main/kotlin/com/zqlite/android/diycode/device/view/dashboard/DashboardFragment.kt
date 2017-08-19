@@ -67,6 +67,14 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
         my_following.setOnClickListener {
             Route.goFollowing(mUserDetail!!.login,activity)
         }
+
+        my_followers.setOnClickListener {
+            Route.goFollowers(mUserDetail!!.login,activity)
+        }
+
+        my_topic.setOnClickListener {
+            Route.goMyTopic(mUserDetail!!.login,activity)
+        }
     }
 
     override fun initData() {
