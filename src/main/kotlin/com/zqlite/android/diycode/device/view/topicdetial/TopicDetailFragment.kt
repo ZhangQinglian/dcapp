@@ -22,6 +22,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
@@ -61,6 +62,7 @@ import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.diycode.device.view.custom.URLImageParser
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_topic_detail.*
+import retrofit2.http.Url
 import java.io.File
 
 /**
@@ -317,9 +319,16 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         Logly.d(data.toString())
         if (data != null) {
             val clipData = data.clipData
-            val urlData = clipData.getItemAt(0)
-            if (urlData.uri != null) {
-                val path = FileUtils.getFilePathByUri(context, urlData.uri)
+            var uri : Uri ? = null
+            if(clipData != null){
+                val urlData = clipData.getItemAt(0)
+                uri = urlData.uri
+            }else{
+                uri = data.data
+            }
+
+            if (uri != null) {
+                val path = FileUtils.getFilePathByUri(context,uri)
                 val file = File(path)
                 mPresenter!!.uploadImage(file)
             }

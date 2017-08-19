@@ -19,8 +19,11 @@ package com.zqlite.android.diycode.device.utils
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.Fragment
+import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
+import com.zqlite.android.diycode.device.view.favorite.FavoriteActivity
 import com.zqlite.android.diycode.device.view.login.LoginActivity
 import com.zqlite.android.diycode.device.view.topicdetial.TopicDetailActivity
 import com.zqlite.android.diycode.device.view.userdetail.UserDetailActivity
@@ -50,10 +53,12 @@ object Route {
     }
 
     fun openBrowser(activity: Activity,urlStr :String){
-        val intent : Intent = Intent(Intent.ACTION_VIEW)
-        val uri = Uri.parse(urlStr)
-        intent.setData(uri)
-        activity.startActivity(intent)
+
+        val build = CustomTabsIntent.Builder()
+        build.setToolbarColor(activity.resources.getColor(R.color.colorPrimary))
+        build.setShowTitle(true)
+        val intent = build.build()
+        intent.launchUrl(activity,Uri.parse(urlStr))
     }
 
     fun openImageView(activity: Activity,urlStr: String){
@@ -66,5 +71,11 @@ object Route {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         fragment.startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+    }
+
+    fun goFavorite(loginName: String,activity: Activity){
+        val intent = Intent(activity,FavoriteActivity::class.java)
+        intent.putExtra("login",loginName)
+        activity.startActivity(intent)
     }
 }

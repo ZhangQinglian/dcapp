@@ -26,6 +26,7 @@ import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
+import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 /**
  * Created by scott on 2017/8/16.
@@ -38,6 +39,7 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
 
     private var mBinding : FragmentDashboardBinding? = null
 
+    private var mUserDetail : UserDetail? = null
     override fun setPresenter(presenter: DashboardContract.Presenter) {
         mPresenter = presenter
     }
@@ -57,12 +59,20 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
                 Route.goLogin(activity)
             }
         }
+
+        my_favorite.setOnClickListener {
+            Route.goFavorite(mUserDetail!!.login,activity)
+        }
     }
 
     override fun initData() {
         mPresenter!!.getLocalUser(context)
     }
 
+    override fun onResume() {
+        super.onResume()
+        mPresenter!!.getLocalUser(context)
+    }
     companion object Factory{
 
         fun getInstance(args : Bundle?):DashboardFragment{
@@ -75,6 +85,7 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
     }
 
     override fun loadUserSuccess(userDetail: UserDetail) {
+        mUserDetail = userDetail
         mBinding!!.setVariable(BR.user,userDetail)
         mBinding!!.executePendingBindings()
         mBinding!!.userName.text = userDetail.name
