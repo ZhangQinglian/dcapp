@@ -63,6 +63,10 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
         my_favorite.setOnClickListener {
             Route.goFavorite(mUserDetail!!.login,activity)
         }
+
+        my_following.setOnClickListener {
+            Route.goFollowing(mUserDetail!!.login,activity)
+        }
     }
 
     override fun initData() {

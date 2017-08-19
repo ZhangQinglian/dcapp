@@ -45,7 +45,7 @@ class UserDetailPresenter(val mView : UserDetailContract.View) : UserDetailContr
     }
 
     override fun getFollowing(login: String) {
-        DiyCodeApi.getfollowing(login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+        DiyCodeApi.getfollowing(login,0,150).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     mView.updateFollowing(it)
                 },

@@ -14,30 +14,31 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.favorite
+package com.zqlite.android.diycode.device.view.following
 
 import android.os.Bundle
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.BaseActivity
 import com.zqlite.android.diycode.device.view.custom.DecorViewProxy
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_following.*
 
 /**
  * Created by scott on 2017/8/19.
  */
-class FavoriteActivity : BaseActivity() {
+class FollowingAvtivity : BaseActivity() {
 
-    private var mFragment : FavoriteFragment ? = null
-    private var mPresenter : FavoriteContract.Presenter ? = null
+    private var mPresenter : FollowingContract.Presenter? = null
+    private var mFragment : FollowingFragment ? = null
 
     override fun getLayoutId(): Int {
-        return R.layout.activity_favorite
+        return R.layout.activity_following
     }
 
     override fun initView() {
+
         //action bar
         setSupportActionBar(toolbar)
-        supportActionBar!!.setTitle(R.string.my_favorite)
+        supportActionBar!!.setTitle(R.string.my_following)
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back)
         toolbar.setNavigationOnClickListener({
             finish()
@@ -46,12 +47,13 @@ class FavoriteActivity : BaseActivity() {
         //slide
         DecorViewProxy().bind(this)
 
-        val login = intent.extras["login"] as String
         val args = Bundle()
+        val login = intent.extras["login"] as String
         args.putString("login",login)
-        mFragment = FavoriteFragment.getInstance(args)
-        mPresenter = FavoritePresenter(mFragment!!)
-        addFragment(mFragment!!,R.id.favorite_container)
+        mFragment = FollowingFragment.getInstance(args)
+        mPresenter = FollowingPresenter(mFragment!!)
+        addFragment(mFragment!!,R.id.following_container)
+
     }
 
     override fun initData() {

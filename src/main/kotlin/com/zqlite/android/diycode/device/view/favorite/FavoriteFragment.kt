@@ -68,6 +68,11 @@ class FavoriteFragment : BaseFragment(),FavoriteContract.View {
     override fun loadFavoriteError() {
     }
 
+    override fun onResume() {
+        super.onResume()
+        mLogin = arguments.getString("login")
+        mPresenter!!.loadFavorite(mLogin!!)
+    }
 
     private inner class FavoriteAdapter : RecyclerView.Adapter<TopicItemHolder>(){
 

@@ -37,4 +37,5 @@
     <string name="click_avatar_to_login">点击头像登录</string>
 
     <string name="my_favorite">我的收藏</string>
+    <string name="my_following">我关注的人</string>
 </resources>
