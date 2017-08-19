@@ -19,6 +19,7 @@ package com.zqlite.android.diycode.device.view.login
 import android.os.Bundle
 import android.widget.Toast
 import com.zqlite.android.dclib.entiry.Token
+import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * Created by scott on 2017/8/15.
  */
 class LoginFragment : BaseFragment(),LoginContract.View {
+
 
 
     private var mPresenter : LoginContract.Presenter? = null
@@ -56,10 +58,15 @@ class LoginFragment : BaseFragment(),LoginContract.View {
     override fun updateToken(token: Token,login:String) {
         TokenStore.saveToken(context,token)
         TokenStore.saveCurrentLogin(context,login)
+
+        mPresenter!!.loadUserDetail(login)
+    }
+
+    override fun loadUserDetailSuccess(userDetail: UserDetail) {
+        TokenStore.saveCurrentAvatarUrl(context,userDetail.avatarUrl)
         Toast.makeText(context,R.string.login_success,Toast.LENGTH_LONG).show()
         activity.finish()
     }
-
     override fun loginError() {
         Toast.makeText(context,R.string.login_error,Toast.LENGTH_LONG).show()
     }

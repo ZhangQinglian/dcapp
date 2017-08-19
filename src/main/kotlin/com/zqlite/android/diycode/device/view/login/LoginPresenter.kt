@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
 
+
     init {
         mView.setPresenter(this)
     }
@@ -49,5 +50,14 @@ class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
         )
 
     }
+    override fun loadUserDetail(loginName: String) {
+        DiyCodeApi.loadUserDetail(loginName).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.loadUserDetailSuccess(it)
+                },
+                {
 
+                }
+        )
+    }
 }

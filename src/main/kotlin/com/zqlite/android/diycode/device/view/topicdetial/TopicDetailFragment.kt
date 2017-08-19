@@ -51,6 +51,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import com.zqlite.android.dclib.entiry.Token
 import com.zqlite.android.dclib.entiry.TopicDetail
 import com.zqlite.android.dclib.entiry.TopicReply
 import com.zqlite.android.diycode.BR
@@ -89,6 +90,11 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun onStop() {
         super.onStop()
         mPresenter!!.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bsb!!.setBottomSheetCallback(null)
     }
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
@@ -230,6 +236,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 }
             }
         })
+
+
     }
 
     override fun initData() {
@@ -238,6 +246,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateTopicDetail(topicDetal: TopicDetail) {
         mAdapter.updateHead(topicDetal)
         fresh_layout.isRefreshing = false
+        NetworkUtils.getInstace(context)!!.loadImage(local_user_avatar,TokenStore.getCurrentAvatarUrl(context),R.drawable.default_avatar)
     }
 
     override fun updateReplies(replies: List<TopicReply>) {

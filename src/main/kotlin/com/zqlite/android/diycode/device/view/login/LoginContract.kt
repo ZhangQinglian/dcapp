@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view.login
 
 import com.zqlite.android.dclib.entiry.Token
+import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
@@ -27,10 +28,12 @@ interface LoginContract {
 
     interface Presenter : IPresenter{
         fun login(loginName:String,password:String)
+        fun loadUserDetail(loginName: String)
     }
 
     interface View :IView<LoginContract.Presenter>{
         fun updateToken(token:Token,loginName: String)
         fun loginError()
+        fun loadUserDetailSuccess(userDetail: UserDetail)
     }
 }

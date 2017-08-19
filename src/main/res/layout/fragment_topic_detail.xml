@@ -51,8 +51,7 @@
                 android:id="@+id/local_user_avatar"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/default_avatar" />
+                android:layout_margin="20dp" />
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/reply_edit"

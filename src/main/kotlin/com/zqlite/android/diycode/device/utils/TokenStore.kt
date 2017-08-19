@@ -38,29 +38,42 @@ object TokenStore {
     val CREATE_AT = "createat_key"
 
     val CURRENT_LOGIN = "current_login"
+
+    val CURRENT_AVATAR_URL = "current_avatar"
+
     fun saveToken(context: Context, token: Token) {
         val edit = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit()
-        edit.putString(ACCESS_TOKEN_KEY,token.accessToken)
-        edit.putString(TOKEN_TYPE_KEY,token.tokenType)
-        edit.putString(EXPIRESIN,token.expiresIn)
-        edit.putString(FRESH_TOKEN_KEY,token.refreshToken)
-        edit.putString(CREATE_AT,token.createdAt)
+        edit.putString(ACCESS_TOKEN_KEY, token.accessToken)
+        edit.putString(TOKEN_TYPE_KEY, token.tokenType)
+        edit.putString(EXPIRESIN, token.expiresIn)
+        edit.putString(FRESH_TOKEN_KEY, token.refreshToken)
+        edit.putString(CREATE_AT, token.createdAt)
         edit.apply()
     }
 
-    fun saveCurrentLogin(context: Context,login:String){
-        context.getSharedPreferences(TOKEN,Context.MODE_PRIVATE).edit().putString(CURRENT_LOGIN,login).apply()
+    fun saveCurrentLogin(context: Context, login: String) {
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit().putString(CURRENT_LOGIN, login).apply()
+
     }
 
-    fun getCurrentLogin(context: Context):String{
-        return context.getSharedPreferences(TOKEN,Context.MODE_PRIVATE).getString(CURRENT_LOGIN,"")
+    fun getCurrentLogin(context: Context): String {
+        return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(CURRENT_LOGIN, "")
     }
-    fun getAccessToken(context: Context) : String {
+
+    fun saveCurrentAvatarUrl(context: Context,avatarUrl:String){
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit().putString(CURRENT_AVATAR_URL, avatarUrl).apply()
+    }
+
+    fun getCurrentAvatarUrl(context: Context): String {
+        return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(CURRENT_AVATAR_URL, "")
+    }
+
+    fun getAccessToken(context: Context): String {
         return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
     }
 
-    fun shouldLogin(context:Context):Boolean{
-        val accessToken = context.getSharedPreferences(TOKEN,Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY,"")
+    fun shouldLogin(context: Context): Boolean {
+        val accessToken = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
         return accessToken.isEmpty()
     }
 }
