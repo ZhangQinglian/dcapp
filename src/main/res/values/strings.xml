@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">DiyCode</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">个人中心</string>
+    <string name="title_notifications">通知</string>
     <string name="topic_detail">话题</string>
     <string name="user_detail">个人中心</string>
     <string name="topic_hits">阅读</string>

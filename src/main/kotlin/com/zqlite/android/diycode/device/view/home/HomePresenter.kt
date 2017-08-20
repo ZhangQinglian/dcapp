@@ -16,10 +16,16 @@
 
 package com.zqlite.android.diycode.device.view.home
 
+import com.zqlite.android.dclib.DiyCodeApi
+import com.zqlite.android.logly.Logly
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+
 /**
  * Created by scott on 2017/8/11.
  */
-class HomePresenter constructor(var mView:HomeContract.View): HomeContract.Presenter {
+class HomePresenter constructor(var mView: HomeContract.View) : HomeContract.Presenter {
+
 
 
     init {
@@ -35,5 +41,29 @@ class HomePresenter constructor(var mView:HomeContract.View): HomeContract.Prese
 
     override fun homeClicked() {
         mView.homeClicked()
+    }
+
+    override fun updateDevice(token: String) {
+        DiyCodeApi.updateDevice(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    Logly.d(it.string())
+                },
+                {
+
+                }
+        )
+    }
+
+    override fun testNo() {
+        DiyCodeApi.getNotification(0,20).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    for(no in it){
+                        Logly.d(no.toString())
+                    }
+                },
+                {
+                    Logly.d(it.toString())
+                }
+        )
     }
 }

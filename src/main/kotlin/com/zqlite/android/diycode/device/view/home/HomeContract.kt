@@ -28,9 +28,12 @@ interface HomeContract{
     interface CategoryCallback{
         fun updateCategory(type : Int,categories : List<Category>)
         fun justUpdateSelf()
+
     }
     interface Presenter : IPresenter{
         fun homeClicked()
+        fun updateDevice(token:String)
+        fun testNo()
     }
 
     interface View : IView<Presenter>{

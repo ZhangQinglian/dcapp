@@ -31,6 +31,7 @@ import com.zqlite.android.dclib.entiry.Node
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.databinding.ListitemTopicNodeItemBinding
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.diycode.device.view.home.topics.TopicContract
 import com.zqlite.android.diycode.device.view.home.topics.TopicFragment
@@ -75,7 +76,8 @@ class HomeFragment : BaseFragment(),HomeContract.View,HomeContract.CategoryCallb
     }
 
     override fun initData() {
-
+        mPresetner!!.updateDevice(TokenStore.getAccessToken(context))
+        mPresetner!!.testNo()
     }
 
     override fun updateCategory(type: Int, categories: List<Category>) {

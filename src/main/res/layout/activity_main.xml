@@ -40,6 +40,6 @@
         android:background="@android:color/white"
         app:menu="@menu/navigation"
         app:layout_anchor="@id/home_container"
-        app:layout_anchorGravity="bottom"/>
+        app:layout_anchorGravity="bottom" />
 
 </android.support.design.widget.CoordinatorLayout>
