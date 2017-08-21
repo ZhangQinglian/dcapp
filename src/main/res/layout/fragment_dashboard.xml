@@ -74,7 +74,8 @@
 
                 <LinearLayout
                     android:id="@+id/my_info"
-                    style="@style/DashboardMenu">
+                    style="@style/DashboardMenu"
+                    android:visibility="gone">
 
                     <ImageView
                         style="@style/DashboardMenuImage"
@@ -151,6 +152,21 @@
                     <TextView
                         style="@style/DashboardMenuCount"
                         android:text="@{user.getFavoriteDes}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/about"
+                    android:layout_marginTop="10dp"
+                    style="@style/DashboardMenu">
+
+                    <ImageView
+                        style="@style/DashboardMenuImage"
+                        android:src="@drawable/ic_about" />
+
+                    <TextView
+                        style="@style/DashboardMenuText"
+                        android:text="@string/my_about" />
+
                 </LinearLayout>
             </LinearLayout>
 

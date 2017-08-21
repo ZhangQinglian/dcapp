@@ -37,9 +37,14 @@
     <string name="click_avatar_to_login">点击头像登录</string>
     <string name="my_favorite">我的收藏</string>
     <string name="my_following">我关注的人</string>
+    <string name="my_about">关于</string>
     <string name="my_followers">关注我的人</string>
     <string name="my_topic">我的话题</string>
     <string name="follow_des">开始关注了你</string>
     <string name="mention_des">"@了你"</string>
     <string name="reply_des">"%1$s在帖子%2$s回复了："</string>
+
+    <string name="app_version">v0.1</string>
+    <string name="app_author">Author:QINGLIAN,ZHANG</string>
+    <string name="app_github">Github(dcapp,dclib)</string>
 </resources>

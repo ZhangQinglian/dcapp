@@ -61,19 +61,42 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
         }
 
         my_favorite.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
             Route.goFavorite(mUserDetail!!.login,activity)
         }
 
         my_following.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
             Route.goFollowing(mUserDetail!!.login,activity)
         }
 
         my_followers.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
             Route.goFollowers(mUserDetail!!.login,activity)
         }
 
         my_topic.setOnClickListener {
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
             Route.goMyTopic(mUserDetail!!.login,activity)
+        }
+        about.setOnClickListener{
+            if(TokenStore.shouldLogin(context)){
+                Route.goLogin(activity)
+                return@setOnClickListener
+            }
+            Route.goAbout(activity)
         }
     }
 

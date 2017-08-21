@@ -22,6 +22,7 @@ import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.Fragment
 import com.zqlite.android.diycode.R
+import com.zqlite.android.diycode.device.view.about.AboutActivity
 import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
 import com.zqlite.android.diycode.device.view.favorite.FavoriteActivity
 import com.zqlite.android.diycode.device.view.follow.FollowAvtivity
@@ -102,4 +103,14 @@ object Route {
         activity.startActivity(intent)
     }
 
+    fun goAbout(activity: Activity){
+        val intent = Intent(activity,AboutActivity::class.java)
+        activity.startActivity(intent)
+    }
+
+    fun goGithub(activity: Activity){
+        val intent= Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("https://github.com/ZhangQinglian")
+        activity.startActivity(intent)
+    }
 }

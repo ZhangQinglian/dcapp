@@ -38,7 +38,7 @@ class NotificationPresenter(val mView :NotificationContract.View) : Notification
     }
 
     override fun loadNotification() {
-        DiyCodeApi.getNotification(0,20).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+        DiyCodeApi.getNotification(0,150).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     mView.updateNotification(it)
                     for(no in it){

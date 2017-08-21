@@ -16,8 +16,10 @@
 
 package com.zqlite.android.diycode.device.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.zqlite.android.diycode.R
 
 /**
  * Created by scott on 2017/8/11.
@@ -37,6 +39,15 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun initData()
 
+    override fun startActivity(intent: Intent?) {
+        super.startActivity(intent)
+        overridePendingTransition(R.anim.comm_right_in,R.anim.comm_hold)
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.comm_hold,R.anim.comm_right_out)
+    }
     fun addFragment(fragment:BaseFragment,containerID:Int){
         supportFragmentManager.beginTransaction().add(containerID,fragment).commit()
     }
