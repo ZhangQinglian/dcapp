@@ -246,7 +246,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateTopicDetail(topicDetal: TopicDetail) {
         mAdapter.updateHead(topicDetal)
         fresh_layout.isRefreshing = false
-        NetworkUtils.getInstace(context)!!.loadImage(local_user_avatar,TokenStore.getCurrentAvatarUrl(context),R.drawable.default_avatar)
+        if(!TokenStore.shouldLogin(context)){
+            NetworkUtils.getInstace(context)!!.loadImage(local_user_avatar,TokenStore.getCurrentAvatarUrl(context),R.drawable.default_avatar)
+        }
     }
 
     override fun updateReplies(replies: List<TopicReply>) {

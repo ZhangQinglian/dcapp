@@ -60,7 +60,7 @@ class TopicDetailPresenter(val mView: TopicDetailContract.View) : TopicDetailCon
                     }
                 },
                 {
-
+                    it.printStackTrace()
                 }
 
         )
