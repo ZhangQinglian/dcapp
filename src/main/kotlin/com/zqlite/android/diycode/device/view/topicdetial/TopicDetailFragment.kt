@@ -82,6 +82,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     private var needGoBottom = false
 
+    private var jumpToReply = true
     override fun onStart() {
         super.onStart()
         mPresenter!!.start()
@@ -96,6 +97,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         super.onDestroy()
         bsb!!.setBottomSheetCallback(null)
     }
+
     override fun setPresenter(presenter: TopicDetailContract.Presenter) {
         mPresenter = presenter
     }
@@ -189,15 +191,15 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             linearLayout.addView(editTextDes)
             linearLayout.addView(editTextUrl)
 
-            builder.setView(linearLayout).setTitle(R.string.url_title).setPositiveButton(R.string.comm_ok,object:DialogInterface.OnClickListener{
+            builder.setView(linearLayout).setTitle(R.string.url_title).setPositiveButton(R.string.comm_ok, object : DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
                     val des = editTextDes.text.toString()
                     val url = editTextUrl.text.toString()
-                    reply_edit.append(MarkdownUtils.getUrlMark(url,des))
+                    reply_edit.append(MarkdownUtils.getUrlMark(url, des))
                     p0?.dismiss()
                 }
 
-            }).setNegativeButton(R.string.comm_cancel,object :DialogInterface.OnClickListener{
+            }).setNegativeButton(R.string.comm_cancel, object : DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
                     p0?.dismiss()
                 }
@@ -206,28 +208,28 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
         }
 
-        topic_detail.addOnScrollListener(object :RecyclerView.OnScrollListener(){
+        topic_detail.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                    if(!fabVisible){
-                        fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).setListener(object :AnimatorListenerAdapter(){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!fabVisible) {
+                        fab_reply.animate().setDuration(200).scaleX(1F).scaleY(1F).setListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationEnd(animation: Animator?) {
                                 fabVisible = true
                             }
                         }).start()
                     }
                 }
-                if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_DRAGGING ){
-                    if(bsb!!.state == BottomSheetBehavior.STATE_EXPANDED){
+                if (newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (bsb!!.state == BottomSheetBehavior.STATE_EXPANDED) {
                         bsb!!.state = BottomSheetBehavior.STATE_COLLAPSED
                     }
-                    if(fabVisible){
-                        fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).setListener(object :AnimatorListenerAdapter(){
+                    if (fabVisible) {
+                        fab_reply.animate().setDuration(200).scaleX(0F).scaleY(0F).setListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationStart(animation: Animator?) {
                                 fabVisible = false
                             }
@@ -246,8 +248,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
     override fun updateTopicDetail(topicDetal: TopicDetail) {
         mAdapter.updateHead(topicDetal)
         fresh_layout.isRefreshing = false
-        if(!TokenStore.shouldLogin(context)){
-            NetworkUtils.getInstace(context)!!.loadImage(local_user_avatar,TokenStore.getCurrentAvatarUrl(context),R.drawable.default_avatar)
+        if (!TokenStore.shouldLogin(context)) {
+            NetworkUtils.getInstace(context)!!.loadImage(local_user_avatar, TokenStore.getCurrentAvatarUrl(context), R.drawable.default_avatar)
         }
     }
 
@@ -255,6 +257,25 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         var topicRepliesList = replies.map { TopicRepliesItem(it) }
         mAdapter.addReplies(topicRepliesList)
         fresh_layout.isRefreshing = false
+
+        //jump to reply
+        if(jumpToReply){
+            val args = arguments
+            if (args != null) {
+                val replyId = args["replyId"] as Int
+                for (index in 0..replies.size - 1) {
+                    if (replies[index].id == replyId) {
+                        Handler().postDelayed({
+                            jumpToReply = false
+                            if(topic_detail != null){
+                                topic_detail.scrollToPosition(index + 1)
+                            }
+                        }, 1000)
+                        break
+                    }
+                }
+            }
+        }
     }
 
     override fun updateLikeStatus(topicId: Int, isLike: Boolean) {
@@ -340,16 +361,16 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
         Logly.d(data.toString())
         if (data != null) {
             val clipData = data.clipData
-            var uri : Uri ? = null
-            if(clipData != null){
+            var uri: Uri? = null
+            if (clipData != null) {
                 val urlData = clipData.getItemAt(0)
                 uri = urlData.uri
-            }else{
+            } else {
                 uri = data.data
             }
 
             if (uri != null) {
-                val path = FileUtils.getFilePathByUri(context,uri)
+                val path = FileUtils.getFilePathByUri(context, uri)
                 val file = File(path)
                 mPresenter!!.uploadImage(file)
             }
@@ -385,11 +406,11 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             itemList.clear()
             itemList.addAll(head)
             itemList.addAll(items)
-            notifyItemRangeChanged(1,items.size)
-            if(needGoBottom){
+            notifyItemRangeChanged(1, items.size)
+            if (needGoBottom) {
                 Handler().postDelayed({
                     topic_detail.smoothScrollToPosition(itemCount)
-                },300)
+                }, 300)
             }
         }
 
@@ -499,7 +520,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.like.setImageResource(R.drawable.ic_like_normal)
                 binding.like.setOnClickListener {
-                    if(checkLogin()){
+                    if (checkLogin()) {
                         return@setOnClickListener
                     }
                     mPresenter!!.likeTopic(topicDetail.id)
@@ -516,7 +537,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.follow.setImageResource(R.drawable.ic_topic_follow_normal)
                 binding.follow.setOnClickListener {
-                    if(checkLogin()){
+                    if (checkLogin()) {
                         return@setOnClickListener
                     }
                     mPresenter!!.followTopic(topicDetail.id)
@@ -533,7 +554,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             } else {
                 binding.favorite.setImageResource(R.drawable.ic_topic_favorite_normal)
                 binding.favorite.setOnClickListener {
-                    if(checkLogin()){
+                    if (checkLogin()) {
                         return@setOnClickListener
                     }
                     binding.favorite.isClickable = false
@@ -556,7 +577,7 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
             if (topicReply.deleted) {
                 topicReply.bodyHtml = "<s><font color=\"#FF0000\">此楼已删除</font></s>"
                 binding.replyFloor.visibility = View.INVISIBLE
-            }else{
+            } else {
                 binding.replyFloor.visibility = View.VISIBLE
             }
             binding.setVariable(BR.topicReply, topicReply)
@@ -576,9 +597,9 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
                 if (checkLogin()) {
                     return@setOnClickListener
                 }
-                val floor = "#"+adapterPosition+"楼"
-                val user = " @" + topicReply.user.login+" "
-                if(bsb!!.state == BottomSheetBehavior.STATE_COLLAPSED){
+                val floor = "#" + adapterPosition + "楼"
+                val user = " @" + topicReply.user.login + " "
+                if (bsb!!.state == BottomSheetBehavior.STATE_COLLAPSED) {
                     bsb!!.state = BottomSheetBehavior.STATE_EXPANDED
                 }
                 reply_edit.setSelection(reply_edit.text.length)
@@ -664,8 +685,8 @@ class TopicDetailFragment : BaseFragment(), TopicDetailContract.View {
 
     }
 
-    private fun checkLogin():Boolean{
-        if(TokenStore.shouldLogin(context)){
+    private fun checkLogin(): Boolean {
+        if (TokenStore.shouldLogin(context)) {
             Route.goLogin(activity)
             return true
         }

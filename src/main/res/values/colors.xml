@@ -6,5 +6,5 @@
     <color name="colorLess">#5995DD</color>
     <color name="bgGray">#f3f5f7</color>
     <color name="lineGray">#555995DD</color>
-
+    <color name="notification_unread">#55e7585b</color>
 </resources>

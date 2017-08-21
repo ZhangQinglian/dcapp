@@ -14,29 +14,23 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.home
+package com.zqlite.android.diycode.device.view.notification
 
+import com.zqlite.android.dclib.entiry.Notification
 import com.zqlite.android.diycode.device.view.imvp.IPresenter
 import com.zqlite.android.diycode.device.view.imvp.IView
 
 /**
- * Created by scott on 2017/8/11.
+ * Created by scott on 2017/8/21.
  */
+interface NotificationContract {
 
-interface HomeContract{
-
-    interface CategoryCallback{
-        fun updateCategory(type : Int,categories : List<Category>)
-        fun justUpdateSelf()
-
-    }
     interface Presenter : IPresenter{
-        fun homeClicked()
-        fun updateDevice(token:String)
+        fun loadNotification()
+        fun readNotification(notificationId:Int)
     }
 
-    interface View : IView<Presenter>{
-        fun homeClicked()
+    interface View: IView<NotificationContract.Presenter>{
+        fun updateNotification(datas:List<Notification>)
     }
 }
-

@@ -23,6 +23,8 @@ import com.zqlite.android.diycode.device.view.dashboard.DashboardPresenter
 import com.zqlite.android.diycode.device.view.home.HomeContract
 import com.zqlite.android.diycode.device.view.home.HomeFragment
 import com.zqlite.android.diycode.device.view.home.HomePresenter
+import com.zqlite.android.diycode.device.view.notification.NotificationFragment
+import com.zqlite.android.diycode.device.view.notification.NotificationPresenter
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -33,6 +35,9 @@ class MainActivity : BaseActivity() {
 
     private var mDashboradFramgnet : DashboardFragment? = null
     private var mDashboardPresenter : DashboardPresenter? = null
+
+    private var mNotificationFragment : NotificationFragment ? = null
+    private var mNotificationPresenter : NotificationPresenter ? = null
     /**
      * 0 home
      * 1 notification
@@ -52,17 +57,22 @@ class MainActivity : BaseActivity() {
                 }
                 showFragment(mHomeFragment!!)
                 hideFragment(mDashboradFramgnet!!)
+                hideFragment(mNotificationFragment!!)
                 mCurrentPage = 0
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
                 showFragment(mDashboradFramgnet!!)
                 hideFragment(mHomeFragment!!)
+                hideFragment(mNotificationFragment!!)
                 mCurrentPage = 2
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
                 mCurrentPage = 1
+                showFragment(mNotificationFragment!!)
+                hideFragment(mDashboradFramgnet!!)
+                hideFragment(mHomeFragment!!)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -88,8 +98,15 @@ class MainActivity : BaseActivity() {
             addFragment(mDashboradFramgnet!!,R.id.home_container)
         }
 
+        //notification
+        if(mNotificationFragment == null){
+            mNotificationFragment = NotificationFragment.getInstance(null)
+            mNotificationPresenter = NotificationPresenter(mNotificationFragment!!)
+            addFragment(mNotificationFragment!!,R.id.home_container)
+        }
         showFragment(mHomeFragment!!)
         hideFragment(mDashboradFramgnet!!)
+        hideFragment(mNotificationFragment!!)
         //init logly
         Logly.setGlobalTag(Logly.Tag(Logly.FLAG_THREAD_NAME,"scott",Logly.VERBOSE))
     }

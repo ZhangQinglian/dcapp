@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view.topicdetial
 
 import android.content.Intent
+import android.os.Bundle
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.BaseActivity
 import com.zqlite.android.diycode.device.view.custom.DecorViewProxy
@@ -46,7 +47,19 @@ class TopicDetailActivity : BaseActivity() {
 
         //slide
         DecorViewProxy().bind(this)
-        mTopicDetailFragment = TopicDetailFragment.getInstance(null)
+
+        val extras = intent.extras
+        var replyId = -1
+        if(extras != null){
+            val data = extras["replyId"]
+            if(data != null){
+                replyId = data as Int
+            }
+        }
+
+        val args = Bundle()
+        args.putInt("replyId",replyId)
+        mTopicDetailFragment = TopicDetailFragment.getInstance(args)
         mPresetner = TopicDetailPresenter(mTopicDetailFragment!!)
         addFragment(mTopicDetailFragment!!,R.id.topic_detail_container)
 

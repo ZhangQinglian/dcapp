@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.zqlite.android.diycode.device.view.home
+package com.zqlite.android.diycode.device.view.notification
 
 import com.zqlite.android.dclib.DiyCodeApi
 import com.zqlite.android.logly.Logly
@@ -22,10 +22,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /**
- * Created by scott on 2017/8/11.
+ * Created by scott on 2017/8/21.
  */
-class HomePresenter constructor(var mView: HomeContract.View) : HomeContract.Presenter {
-
+class NotificationPresenter(val mView :NotificationContract.View) : NotificationContract.Presenter {
 
 
     init {
@@ -33,24 +32,34 @@ class HomePresenter constructor(var mView: HomeContract.View) : HomeContract.Pre
     }
 
     override fun start() {
-
     }
 
     override fun stop() {
     }
 
-    override fun homeClicked() {
-        mView.homeClicked()
-    }
-
-    override fun updateDevice(token: String) {
-        DiyCodeApi.updateDevice(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+    override fun loadNotification() {
+        DiyCodeApi.getNotification(0,20).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
-                    Logly.d(it.string())
+                    mView.updateNotification(it)
+                    for(no in it){
+                        Logly.d(no.toString())
+                    }
                 },
                 {
-
+                    Logly.d(it.toString())
                 }
         )
     }
+
+    override fun readNotification(notificationId: Int) {
+        DiyCodeApi.readNotification(listOf(notificationId)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    Logly.d(it.toString())
+                },
+                {
+                    Logly.d(it.toString())
+                }
+        )
+    }
+
 }

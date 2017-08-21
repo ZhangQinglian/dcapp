@@ -77,7 +77,6 @@ class HomeFragment : BaseFragment(),HomeContract.View,HomeContract.CategoryCallb
 
     override fun initData() {
         mPresetner!!.updateDevice(TokenStore.getAccessToken(context))
-        mPresetner!!.testNo()
     }
 
     override fun updateCategory(type: Int, categories: List<Category>) {

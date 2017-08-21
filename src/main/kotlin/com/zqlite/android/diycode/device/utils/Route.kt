@@ -42,9 +42,13 @@ object Route {
         activity.startActivity(intent)
     }
 
-    fun goTopicDetail(activity: Activity,topicId:Int){
+    fun goTopicDetail(activity: Activity,topicId:Int,topicReplyId:Int = -1){
+
         val intent : Intent = Intent(activity, TopicDetailActivity::class.java)
         intent.putExtra("topicId",topicId)
+        if(topicReplyId != -1){
+            intent.putExtra("replyId",topicReplyId)
+        }
         activity.startActivity(intent)
     }
 
@@ -55,11 +59,9 @@ object Route {
 
     fun openBrowser(activity: Activity,urlStr :String){
 
-        val build = CustomTabsIntent.Builder()
-        build.setToolbarColor(activity.resources.getColor(R.color.colorPrimary))
-        build.setShowTitle(true)
-        val intent = build.build()
-        intent.launchUrl(activity,Uri.parse(urlStr))
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(urlStr)
+        activity.startActivity(intent)
     }
 
     fun openImageView(activity: Activity,urlStr: String){

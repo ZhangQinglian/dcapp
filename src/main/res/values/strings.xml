@@ -39,4 +39,7 @@
     <string name="my_following">我关注的人</string>
     <string name="my_followers">关注我的人</string>
     <string name="my_topic">我的话题</string>
+    <string name="follow_des">开始关注了你</string>
+    <string name="mention_des">"@了你"</string>
+    <string name="reply_des">"%1$s在帖子%2$s回复了："</string>
 </resources>
