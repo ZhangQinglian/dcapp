@@ -34,6 +34,7 @@ import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.utils.CalendarUtils
 import com.zqlite.android.diycode.device.utils.NetworkUtils
 import com.zqlite.android.diycode.device.utils.Route
+import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_notification.*
@@ -50,7 +51,9 @@ class NotificationFragment :BaseFragment(),NotificationContract.View {
 
     override fun onResume() {
         super.onResume()
-        mPresenter!!.loadNotification()
+        if(!TokenStore.shouldLogin(context)){
+            mPresenter!!.loadNotification()
+        }
     }
 
     override fun setPresenter(presenter: NotificationContract.Presenter) {
@@ -69,7 +72,6 @@ class NotificationFragment :BaseFragment(),NotificationContract.View {
             mPresenter!!.loadNotification()
         })
         notification_fresh.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
-        notification_fresh.isRefreshing = true
     }
 
     override fun initData() {
