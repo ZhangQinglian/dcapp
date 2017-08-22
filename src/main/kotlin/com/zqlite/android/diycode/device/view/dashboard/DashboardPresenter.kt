@@ -19,17 +19,20 @@ package com.zqlite.android.diycode.device.view.dashboard
 import android.content.Context
 import com.zqlite.android.dclib.DiyCodeApi
 import com.zqlite.android.diycode.device.utils.TokenStore
+import com.zqlite.android.logly.Logly
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by scott on 2017/8/18.
  */
-class DashboardPresenter(val mView:DashboardContract.View):DashboardContract.Presenter {
+class DashboardPresenter(val mView: DashboardContract.View) : DashboardContract.Presenter {
+
 
     init {
         mView.setPresenter(this)
     }
+
     override fun start() {
     }
 
@@ -38,15 +41,26 @@ class DashboardPresenter(val mView:DashboardContract.View):DashboardContract.Pre
 
     override fun getLocalUser(context: Context) {
         val localLogin = TokenStore.getCurrentLogin(context)
-        if(localLogin.isNotEmpty()){
+        if (localLogin.isNotEmpty()) {
             DiyCodeApi.loadUserDetail(localLogin).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     {
                         mView.loadUserSuccess(it)
-                    },{}
+                    }, {}
             )
-        }else{
+        } else {
             mView.needLogin()
         }
     }
 
+    override fun logout(token: String) {
+        DiyCodeApi.deleteDevice(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    mView.logoutSuccess()
+                    Logly.d(it.toString())
+                },
+                {
+                    Logly.d(it.toString())
+                }
+        )
+    }
 }

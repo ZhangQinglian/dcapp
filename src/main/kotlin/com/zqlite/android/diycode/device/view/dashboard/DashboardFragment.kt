@@ -18,6 +18,9 @@ package com.zqlite.android.diycode.device.view.dashboard
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
+import android.view.View
+import android.widget.Toast
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
@@ -28,18 +31,18 @@ import com.zqlite.android.diycode.device.utils.TokenStore
 import com.zqlite.android.diycode.device.view.BaseFragment
 import com.zqlite.android.logly.Logly
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+
 /**
  * Created by scott on 2017/8/16.
  */
-class DashboardFragment : BaseFragment(),DashboardContract.View {
+class DashboardFragment : BaseFragment(), DashboardContract.View {
 
 
+    private var mPresenter: DashboardContract.Presenter? = null
 
-    private var mPresenter : DashboardContract.Presenter? = null
+    private var mBinding: FragmentDashboardBinding? = null
 
-    private var mBinding : FragmentDashboardBinding? = null
-
-    private var mUserDetail : UserDetail? = null
+    private var mUserDetail: UserDetail? = null
     override fun setPresenter(presenter: DashboardContract.Presenter) {
         mPresenter = presenter
     }
@@ -55,48 +58,53 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
         }
         fresh_layout.setColorSchemeColors(resources.getColor(R.color.colorPrimary))
         mBinding!!.avatar.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
             }
         }
 
         my_favorite.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
                 return@setOnClickListener
             }
-            Route.goFavorite(mUserDetail!!.login,activity)
+            Route.goFavorite(mUserDetail!!.login, activity)
         }
 
         my_following.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
                 return@setOnClickListener
             }
-            Route.goFollowing(mUserDetail!!.login,activity)
+            Route.goFollowing(mUserDetail!!.login, activity)
         }
 
         my_followers.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
                 return@setOnClickListener
             }
-            Route.goFollowers(mUserDetail!!.login,activity)
+            Route.goFollowers(mUserDetail!!.login, activity)
         }
 
         my_topic.setOnClickListener {
-            if(TokenStore.shouldLogin(context)){
+            if (TokenStore.shouldLogin(context)) {
                 Route.goLogin(activity)
                 return@setOnClickListener
             }
-            Route.goMyTopic(mUserDetail!!.login,activity)
+            Route.goMyTopic(mUserDetail!!.login, activity)
         }
-        about.setOnClickListener{
-            if(TokenStore.shouldLogin(context)){
-                Route.goLogin(activity)
-                return@setOnClickListener
-            }
+        about.setOnClickListener {
             Route.goAbout(activity)
+        }
+
+        exit.setOnClickListener {
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(R.string.logout).setPositiveButton(R.string.exit, {
+                p0, _ ->
+                p0.dismiss()
+                mPresenter!!.logout(TokenStore.getAccessToken(context))
+            }).setNegativeButton(R.string.comm_cancel, null).setCancelable(true).show()
         }
     }
 
@@ -108,11 +116,12 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
         super.onResume()
         mPresenter!!.getLocalUser(context)
     }
-    companion object Factory{
 
-        fun getInstance(args : Bundle?):DashboardFragment{
+    companion object Factory {
+
+        fun getInstance(args: Bundle?): DashboardFragment {
             val fragment = DashboardFragment()
-            if(args != null){
+            if (args != null) {
                 fragment.arguments = args
             }
             return fragment
@@ -121,14 +130,30 @@ class DashboardFragment : BaseFragment(),DashboardContract.View {
 
     override fun loadUserSuccess(userDetail: UserDetail) {
         mUserDetail = userDetail
-        mBinding!!.setVariable(BR.user,userDetail)
+        mBinding!!.setVariable(BR.user, userDetail)
         mBinding!!.executePendingBindings()
         mBinding!!.userName.text = userDetail.name
         fresh_layout.isRefreshing = false
-        NetworkUtils.getInstace(context)!!.loadImage(mBinding!!.avatar,userDetail.avatarUrl,R.drawable.default_avatar)
+        NetworkUtils.getInstace(context)!!.loadImage(mBinding!!.avatar, userDetail.avatarUrl, R.drawable.default_avatar)
+        exit.visibility = View.VISIBLE
     }
 
     override fun needLogin() {
         fresh_layout.isRefreshing = false
     }
+
+    override fun logoutSuccess() {
+        TokenStore.logout(context)
+        Toast.makeText(context, R.string.exit_success, Toast.LENGTH_LONG).show()
+        clearUI()
+    }
+
+    fun clearUI() {
+        val empty = UserDetail(-1, "", "", "", "", "", "", "", "", "", "", "", "", 0, 0, 0, 0, 0, "", "")
+        mBinding!!.setVariable(BR.user, empty)
+        mBinding!!.executePendingBindings()
+        mBinding!!.userName.text = resources.getString(R.string.click_avatar_to_login)
+        exit.visibility = View.INVISIBLE
+    }
+
 }

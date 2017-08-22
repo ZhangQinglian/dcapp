@@ -17,6 +17,7 @@
 package com.zqlite.android.diycode.device.view
 
 import android.support.design.widget.BottomNavigationView
+import com.zqlite.android.diycode.BuildConfig
 import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.dashboard.DashboardFragment
 import com.zqlite.android.diycode.device.view.dashboard.DashboardPresenter
@@ -108,7 +109,12 @@ class MainActivity : BaseActivity() {
         hideFragment(mDashboradFramgnet!!)
         hideFragment(mNotificationFragment!!)
         //init logly
-        Logly.setGlobalTag(Logly.Tag(Logly.FLAG_THREAD_NAME,"scott",Logly.VERBOSE))
+        if(BuildConfig.DEBUG){
+            Logly.setGlobalTag(Logly.Tag(Logly.FLAG_THREAD_NAME,"scott",Logly.VERBOSE))
+        }else{
+            Logly.setGlobalTag(Logly.Tag(Logly.FLAG_THREAD_NAME,"scott",Logly.ERROR))
+        }
+
     }
 
     override fun initData() {

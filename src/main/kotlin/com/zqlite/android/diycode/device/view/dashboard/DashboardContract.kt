@@ -28,10 +28,12 @@ interface DashboardContract {
 
     interface Presenter :IPresenter{
         fun getLocalUser(context: Context)
+        fun logout(token:String)
     }
 
     interface View :IView<DashboardContract.Presenter>{
         fun loadUserSuccess(userDetail: UserDetail)
         fun needLogin()
+        fun logoutSuccess()
     }
 }

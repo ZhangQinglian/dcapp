@@ -38,7 +38,7 @@
                 android:background="@color/bgGray"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -60,6 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/click_avatar_to_login"
+                        android:layout_below="@id/avatar"
                         android:textColor="@color/colorPrimary"
                         android:textSize="25sp" />
 
@@ -67,10 +68,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@{user.getLoginDes}"
+                        android:layout_below="@id/user_name"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="13sp" />
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/exit"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:visibility="invisible"
+                        android:src="@drawable/ic_exit"/>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/my_info"

@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="@{topic.user.name}"
+                    android:text="@{topic.user.getShowName}"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
                     android:textStyle="bold" />

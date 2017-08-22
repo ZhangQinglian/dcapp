@@ -44,6 +44,10 @@
     <string name="mention_des">"@了你"</string>
     <string name="reply_des">"%1$s在帖子%2$s回复了："</string>
 
+    <string name="logout">是否要退出当前登录？</string>
+    <string name="exit">退出</string>
+    <string name="exit_success">已退出</string>
+
     <string name="app_version">v0.1</string>
     <string name="app_author">Author:QINGLIAN,ZHANG</string>
     <string name="app_github">Github(dcapp,dclib)</string>

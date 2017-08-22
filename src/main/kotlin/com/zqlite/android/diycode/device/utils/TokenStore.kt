@@ -76,4 +76,16 @@ object TokenStore {
         val accessToken = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
         return accessToken.isEmpty()
     }
+
+    fun logout(context: Context){
+        val edit = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit()
+        edit.putString(ACCESS_TOKEN_KEY,"")
+        edit.putString(TOKEN_TYPE_KEY, "")
+        edit.putString(EXPIRESIN, "")
+        edit.putString(FRESH_TOKEN_KEY, "")
+        edit.putString(CREATE_AT,"")
+        edit.putString(CURRENT_LOGIN,"")
+        edit.putString(CURRENT_AVATAR_URL,"")
+        edit.apply()
+    }
 }
