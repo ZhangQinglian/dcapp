@@ -29,6 +29,7 @@ interface LoginContract {
     interface Presenter : IPresenter{
         fun login(loginName:String,password:String)
         fun loadUserDetail(loginName: String)
+        fun updateDevice(token:String)
     }
 
     interface View :IView<LoginContract.Presenter>{

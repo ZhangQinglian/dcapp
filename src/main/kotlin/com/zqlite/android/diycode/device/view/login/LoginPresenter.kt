@@ -60,4 +60,16 @@ class LoginPresenter(val mView: LoginContract.View) : LoginContract.Presenter {
                 }
         )
     }
+
+    override fun updateDevice(token: String) {
+        DiyCodeApi.updateDevice(token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    Logly.d(it.string())
+                },
+                {
+
+                }
+        )
+    }
+
 }

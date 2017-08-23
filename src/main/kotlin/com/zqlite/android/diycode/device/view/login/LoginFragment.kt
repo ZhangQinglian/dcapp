@@ -58,7 +58,7 @@ class LoginFragment : BaseFragment(),LoginContract.View {
     override fun updateToken(token: Token,login:String) {
         TokenStore.saveToken(context,token)
         TokenStore.saveCurrentLogin(context,login)
-
+        mPresenter!!.updateDevice(token.accessToken)
         mPresenter!!.loadUserDetail(login)
     }
 

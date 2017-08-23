@@ -43,6 +43,7 @@
     <string name="follow_des">开始关注了你</string>
     <string name="mention_des">"@了你"</string>
     <string name="reply_des">"%1$s在帖子%2$s回复了："</string>
+    <string name="new_topic">"你关注的%1$s发布了%2$s"</string>
 
     <string name="logout">是否要退出当前登录？</string>
     <string name="exit">退出</string>

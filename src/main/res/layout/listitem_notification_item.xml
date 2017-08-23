@@ -48,6 +48,7 @@
         android:layout_toRightOf="@id/avatar"
         android:layout_below="@id/notification_title"
         android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
         android:textColor="@android:color/black"
         android:textSize="14sp"/>
 </RelativeLayout>

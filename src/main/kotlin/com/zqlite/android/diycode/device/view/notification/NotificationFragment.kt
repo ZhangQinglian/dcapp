@@ -161,6 +161,13 @@ class NotificationFragment :BaseFragment(),NotificationContract.View {
                         mPresenter!!.readNotification(notification.id)
                     }
                 }
+                "Topic"->{
+                    content.text = spanTopic(name,notification.topic.title)
+                    root.setOnClickListener {
+                        Route.goTopicDetail(activity,notification.topic.id)
+                        mPresenter!!.readNotification(notification.id)
+                    }
+                }
             }
             //title.text = Html.fromHtml(notification.)
         }
@@ -194,10 +201,21 @@ class NotificationFragment :BaseFragment(),NotificationContract.View {
     private fun spanTopicReply(name:String,title:String):Spanned{
         val text = resources.getString(R.string.reply_des,name,title)
         val ssb = SpannableStringBuilder(text)
-        val foregroundColor1 : ForegroundColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
-        val foregroundColor2 : ForegroundColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
+        val foregroundColor1  = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
+        val foregroundColor2  = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
         ssb.setSpan(foregroundColor1,0,name.length,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         ssb.setSpan(foregroundColor2,text.indexOf(title),text.indexOf(title) + title.length,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         return ssb
     }
+
+    private fun spanTopic(name:String,title:String):Spanned{
+        val text = resources.getString(R.string.new_topic,name,title)
+        val ssb = SpannableStringBuilder(text)
+        val foregroundColor1  = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
+        val foregroundColor2  = ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary))
+        ssb.setSpan(foregroundColor1,text.indexOf(name),text.indexOf(name) + name.length,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        ssb.setSpan(foregroundColor2,text.indexOf(title),text.indexOf(title) + title.length,Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        return ssb
+    }
+
 }
