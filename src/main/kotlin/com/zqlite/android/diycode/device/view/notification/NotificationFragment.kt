@@ -162,7 +162,7 @@ class NotificationFragment :BaseFragment(),NotificationContract.View {
                     }
                 }
                 "Topic"->{
-                    content.text = spanTopic(name,notification.topic.title)
+                    title.text = spanTopic(name,notification.topic.title)
                     root.setOnClickListener {
                         Route.goTopicDetail(activity,notification.topic.id)
                         mPresenter!!.readNotification(notification.id)
