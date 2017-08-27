@@ -170,7 +170,6 @@ class SlideView : FrameLayout {
 
 
         override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            Logly.d("    ____________   fling :  x = $velocityX   y = $velocityY")
             if (velocityX > 5000) {
                 removeDecorView(0)
                 return true

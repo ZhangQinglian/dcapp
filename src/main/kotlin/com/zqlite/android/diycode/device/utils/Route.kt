@@ -19,9 +19,7 @@ package com.zqlite.android.diycode.device.utils
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.Fragment
-import com.zqlite.android.diycode.R
 import com.zqlite.android.diycode.device.view.about.AboutActivity
 import com.zqlite.android.diycode.device.view.custom.ImageViewerActivity
 import com.zqlite.android.diycode.device.view.favorite.FavoriteActivity
@@ -39,16 +37,20 @@ object Route {
 
     fun goUserDetail(activity:Activity,loginName:String){
         val intent : Intent = Intent(activity,UserDetailActivity::class.java)
-        intent.putExtra(UserDetailActivity.kUserLoiginKey,loginName)
+        intent.apply {
+            putExtra(UserDetailActivity.kUserLoiginKey,loginName)
+        }
         activity.startActivity(intent)
     }
 
     fun goTopicDetail(activity: Activity,topicId:Int,topicReplyId:Int = -1){
 
         val intent : Intent = Intent(activity, TopicDetailActivity::class.java)
-        intent.putExtra("topicId",topicId)
-        if(topicReplyId != -1){
-            intent.putExtra("replyId",topicReplyId)
+        intent.apply {
+            putExtra("topicId",topicId)
+            if(topicReplyId != -1){
+                putExtra("replyId",topicReplyId)
+            }
         }
         activity.startActivity(intent)
     }
@@ -61,45 +63,60 @@ object Route {
     fun openBrowser(activity: Activity,urlStr :String){
 
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(urlStr)
+        intent.apply {
+            data = Uri.parse(urlStr)
+        }
         activity.startActivity(intent)
     }
 
     fun openImageView(activity: Activity,urlStr: String){
         val intent : Intent = Intent(activity,ImageViewerActivity::class.java)
-        intent.putExtra("url",urlStr)
+        intent.apply {
+            putExtra("url",urlStr)
+        }
         activity.startActivity(intent)
     }
 
     fun pickImage(fragment: Fragment){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
+        intent.apply {
+            type = "image/*"
+        }
         fragment.startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
     }
 
     fun goFavorite(loginName: String,activity: Activity){
         val intent = Intent(activity,FavoriteActivity::class.java)
-        intent.putExtra("login",loginName)
-        intent.putExtra("type",0)
+        intent.apply {
+            putExtra("login",loginName)
+            putExtra("type",0)
+        }
         activity.startActivity(intent)
     }
     fun goMyTopic(loginName: String,activity: Activity){
         val intent = Intent(activity,FavoriteActivity::class.java)
-        intent.putExtra("login",loginName)
-        intent.putExtra("type",1)
+        intent.apply {
+            putExtra("login",loginName)
+            putExtra("type",1)
+        }
         activity.startActivity(intent)
     }
 
     fun goFollowing(loginName: String,activity: Activity){
         val intent = Intent(activity, FollowAvtivity::class.java)
-        intent.putExtra("login",loginName)
-        intent.putExtra("type",0)
+        intent.apply {
+            putExtra("login",loginName)
+            putExtra("type",0)
+        }
+
         activity.startActivity(intent)
     }
     fun goFollowers(loginName: String,activity: Activity){
         val intent = Intent(activity, FollowAvtivity::class.java)
-        intent.putExtra("login",loginName)
-        intent.putExtra("type",1)
+        intent.apply {
+            putExtra("login",loginName)
+            putExtra("type",1)
+        }
         activity.startActivity(intent)
     }
 
@@ -110,7 +127,9 @@ object Route {
 
     fun goGithub(activity: Activity){
         val intent= Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse("https://github.com/ZhangQinglian")
+        intent.apply {
+            data = Uri.parse("https://github.com/ZhangQinglian")
+        }
         activity.startActivity(intent)
     }
 }

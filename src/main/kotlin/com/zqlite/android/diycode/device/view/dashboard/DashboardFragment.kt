@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Toast
+import com.zqlite.android.ak47.show
 import com.zqlite.android.dclib.entiry.UserDetail
 import com.zqlite.android.diycode.BR
 import com.zqlite.android.diycode.R
@@ -100,11 +101,16 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
         exit.setOnClickListener {
             val builder = AlertDialog.Builder(context)
-            builder.setMessage(R.string.logout).setPositiveButton(R.string.exit, {
-                p0, _ ->
-                p0.dismiss()
-                mPresenter!!.logout(TokenStore.getAccessToken(context))
-            }).setNegativeButton(R.string.comm_cancel, null).setCancelable(true).show()
+            builder.show {
+                setMessage(R.string.logout)
+                setPositiveButton(R.string.exit, {
+                    p0, _ ->
+                    p0.dismiss()
+                    mPresenter!!.logout(TokenStore.getAccessToken(context))
+                })
+                setNegativeButton(R.string.comm_cancel, null)
+                setCancelable(true)
+            }
         }
     }
 
@@ -130,9 +136,11 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
     override fun loadUserSuccess(userDetail: UserDetail) {
         mUserDetail = userDetail
-        mBinding!!.setVariable(BR.user, userDetail)
-        mBinding!!.executePendingBindings()
-        mBinding!!.userName.text = userDetail.name
+        mBinding!!.apply {
+            setVariable(BR.user, userDetail)
+            executePendingBindings()
+            userName.text = userDetail.name
+        }
         fresh_layout.isRefreshing = false
         NetworkUtils.getInstace(context)!!.loadImage(mBinding!!.avatar, userDetail.avatarUrl, R.drawable.default_avatar)
         exit.visibility = View.VISIBLE
@@ -150,9 +158,11 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
     fun clearUI() {
         val empty = UserDetail(-1, "", "", "", "", "", "", "", "", "", "", "", "", 0, 0, 0, 0, 0, "", "")
-        mBinding!!.setVariable(BR.user, empty)
-        mBinding!!.executePendingBindings()
-        mBinding!!.userName.text = resources.getString(R.string.click_avatar_to_login)
+        mBinding!!.apply {
+            setVariable(BR.user, empty)
+            executePendingBindings()
+            userName.text = resources.getString(R.string.click_avatar_to_login)
+        }
         exit.visibility = View.INVISIBLE
     }
 

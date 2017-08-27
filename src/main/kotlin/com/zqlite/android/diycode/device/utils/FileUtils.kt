@@ -28,9 +28,9 @@ import android.provider.MediaStore
 
 object FileUtils {
     fun getFilePathByUri(context: Context, uri: Uri?): String? {
-        var uri: Uri? = uri ?: return null
+        if(uri == null) return null
         var filePath = "unknown"//default fileName
-        var filePathUri: Uri = uri!!
+        var filePathUri: Uri = uri
         try {
             if (filePathUri.scheme.compareTo("content") == 0) {
                 if (Build.VERSION.SDK_INT == 22 || Build.VERSION.SDK_INT == 23) {
@@ -38,7 +38,7 @@ object FileUtils {
                         val pathUri = uri.path
                         val newUri = pathUri.substring(pathUri.indexOf("content"),
                                 pathUri.lastIndexOf("/ACTUAL"))
-                        uri = Uri.parse(newUri)
+                        filePathUri = Uri.parse(newUri)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

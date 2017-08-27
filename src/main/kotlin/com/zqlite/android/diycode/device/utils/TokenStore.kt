@@ -17,12 +17,16 @@
 package com.zqlite.android.diycode.device.utils
 
 import android.content.Context
-import android.content.SharedPreferences
+import com.zqlite.android.ak47.getSPString
+import com.zqlite.android.ak47.save
+import com.zqlite.android.ak47.set
 import com.zqlite.android.dclib.entiry.Token
 
 /**
  * Created by scott on 2017/8/15.
  */
+
+
 object TokenStore {
 
     val TOKEN = "tokenStore"
@@ -42,50 +46,53 @@ object TokenStore {
     val CURRENT_AVATAR_URL = "current_avatar"
 
     fun saveToken(context: Context, token: Token) {
-        val edit = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit()
-        edit.putString(ACCESS_TOKEN_KEY, token.accessToken)
-        edit.putString(TOKEN_TYPE_KEY, token.tokenType)
-        edit.putString(EXPIRESIN, token.expiresIn)
-        edit.putString(FRESH_TOKEN_KEY, token.refreshToken)
-        edit.putString(CREATE_AT, token.createdAt)
-        edit.apply()
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).save {
+            set(ACCESS_TOKEN_KEY to token.accessToken)
+            set(TOKEN_TYPE_KEY to token.tokenType)
+            set(EXPIRESIN to token.expiresIn)
+            set(FRESH_TOKEN_KEY to token.refreshToken)
+            set(CREATE_AT to  token.createdAt)
+        }
     }
 
     fun saveCurrentLogin(context: Context, login: String) {
-        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit().putString(CURRENT_LOGIN, login).apply()
-
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).save {
+            set(CURRENT_LOGIN to login)
+        }
     }
 
     fun getCurrentLogin(context: Context): String {
-        return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(CURRENT_LOGIN, "")
+        return context.getSPString(TOKEN, CURRENT_LOGIN,"")
     }
 
     fun saveCurrentAvatarUrl(context: Context,avatarUrl:String){
-        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit().putString(CURRENT_AVATAR_URL, avatarUrl).apply()
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).save {
+            set(CURRENT_AVATAR_URL to avatarUrl)
+        }
     }
 
     fun getCurrentAvatarUrl(context: Context): String {
-        return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(CURRENT_AVATAR_URL, "")
+        return context.getSPString(TOKEN, CURRENT_AVATAR_URL,"")
     }
 
     fun getAccessToken(context: Context): String {
-        return context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
+        return context.getSPString(TOKEN, ACCESS_TOKEN_KEY,"")
     }
 
     fun shouldLogin(context: Context): Boolean {
-        val accessToken = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY, "")
+        val accessToken = context.getSPString(TOKEN, ACCESS_TOKEN_KEY,"")
         return accessToken.isEmpty()
     }
 
     fun logout(context: Context){
-        val edit = context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit()
-        edit.putString(ACCESS_TOKEN_KEY,"")
-        edit.putString(TOKEN_TYPE_KEY, "")
-        edit.putString(EXPIRESIN, "")
-        edit.putString(FRESH_TOKEN_KEY, "")
-        edit.putString(CREATE_AT,"")
-        edit.putString(CURRENT_LOGIN,"")
-        edit.putString(CURRENT_AVATAR_URL,"")
-        edit.apply()
+        context.getSharedPreferences(TOKEN, Context.MODE_PRIVATE).save {
+            set(ACCESS_TOKEN_KEY to "")
+            set(TOKEN_TYPE_KEY to  "")
+            set(EXPIRESIN to  "")
+            set(FRESH_TOKEN_KEY to  "")
+            set(CREATE_AT to "")
+            set(CURRENT_LOGIN to "")
+            set(CURRENT_AVATAR_URL to "")
+        }
     }
 }

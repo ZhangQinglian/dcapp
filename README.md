@@ -50,7 +50,7 @@
 
 ## 源码及使用
 
-本工程源码分两个模块`dcapp`和`dclib`,其中dclib提供简洁的api为上层提供支持，dcapp为UI模块。
+本工程源码分三个模块`dcapp`，`dclib`,`ak47`,其中dclib提供简洁的api为上层提供支持，dcapp为UI模块，ak47为extension function扩展库。
 
 
 ### dclib中开放接口
@@ -222,12 +222,12 @@ object DiyCodeApi:DiyCodeService.Callback{
 
 dclib:[https://github.com/ZhangQinglian/dclib](https://github.com/ZhangQinglian/dclib)
 dcapp:[https://github.com/ZhangQinglian/dcapp](https://github.com/ZhangQinglian/dcapp)
-
+ak47:[https://github.com/ZhangQinglian/ak47](https://github.com/ZhangQinglian/ak47)
 ### 编译
 
 **需要使用Android Studio 3.0及以上版本**
 
-- 自己再本地新建一个Project，然后将上述两个模块导入，并设置dcapp依赖dclib
+- 自己再本地新建一个Project，然后将上述两个模块导入，并设置dcapp依赖dclib和ak47
 - 在dclib中添加local.properties文件，并设置以下两个值：
 
 ```properties
